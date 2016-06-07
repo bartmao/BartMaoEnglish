@@ -1,3 +1,8 @@
+.sidebar
+{
+    font-size: 10px;
+}
+
 .lrc-wrapper-bg
 {
     opacity:0.1;
@@ -19,16 +24,28 @@
     font:14px/20px 'microsoft yahei', Helvetica, Arial, 宋体, sans-serif;
 }
 
+.controller span:hover
+{
+    border: 1px solid grey;
+}
+
+.track div
+{
+    width:160px;
+    white-space:nowrap;
+    overflow:hidden;
+}
+
+.track .badge
+{
+    margin-top: -17px;
+}
+
 @media (min-width: 992px) 
 {
     body
     {
         overflow-x: scroll;    
-    }
-    
-    .body-container
-    {
-        width:1600px;    
     }
     
     .lrc-wrapper-bg
@@ -41,13 +58,18 @@
         margin-left: 0px;
     }
     
-    .sidebar, .player
+    .sidebar
     {
-        width:380px;
+        width:300px;
+    }
+    
+    .player
+    {
+        width:350px;
     }
     
     .lyric
     {
-        width:507px;
+        max-width:550px;
     }
 }
