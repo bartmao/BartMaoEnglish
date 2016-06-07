@@ -8,8 +8,7 @@
   <title>Bart Mao English</title>
 
   <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="/stylesheets/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
-    crossorigin="anonymous">
+  <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -73,9 +72,9 @@
     </div>
     <!-- /.container-fluid -->
   </nav>
-  <div class="container-fluid">
+  <div class="container-fluid body-container">
     <div class="row">
-      <div class="col-sm-12 col-md-3">
+      <div class="col-sm-12 col-md-3 sidebar">
         <div class="panel panel-primary">
           <div class="panel-heading">
             <h3 class="panel-title">Friends (TV Series 1994–2004)</h3>
@@ -110,17 +109,56 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-12 col-md-3">
+      <div class="col-sm-12 col-md-3 player">
         <div class="panel panel-default">
-          <ul class="list-group">
+          <ul class="list-group" style="text-align:center;">
             <li class="list-group-item">
               <img src="images/S01E01.png" width="240" height="240" alt="sp_s01e01.png">
             </li>
             <li class="list-group-item">
-
+              <b>S01E01.The One Where It AII Began</b><br>
+              <span style="font-size:12px;">Friends (TV Series 1994–2004)</span>
+            </li>
+            <li class="list-group-item" style="font-size:20px;">
+              <div class="row">
+                <div class="col-xs-3"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></div>
+                <div class="col-xs-3"><span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span></div>
+                <div class="col-xs-3"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span></div>
+                <div class="col-xs-3"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></div>
+              </div>
             </li>
           </ul>
           <div class="panel-body">
+            <div class="progress">
+              <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                15:50
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6"><span style="font-size:15px;color:gray;">15:50 / 22:58</span></div>
+              <div class="col-sm-6">
+                <span class="glyphicon glyphicon-new-window" aria-hidden="true" style="float:right"></span>
+                <span class="glyphicon glyphicon-new-eye-open" aria-hidden="true" style="float:right"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-4 lyric">
+        <div>
+          <div class="lrc-wrapper-bg"></div>
+          <div class="lrc-container">
+            <p>
+              If happy ever after did exist I would still be holding you like this And all those fairytales are full of shit One more fucking
+              love song i'll be sick Oh
+            </p>
+            <p>
+              I've wasted my nights You turned out the lights Now i'm paralyzed Still stucked in that
+            </p>
+            <p>
+              I'm at a payphone trying to call home All of my change I spent on you Where have the times gone Baby It's all wrong, where
+              are the plans we made for two?
+            </p>
           </div>
         </div>
       </div>
@@ -129,8 +167,8 @@
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <script src="/scripts/jquery.min.js"></script>
   <!-- Latest compiled and minified JavaScript -->
-  <script src="/scripts/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
-    crossorigin="anonymous"></script>
+  <script src="/scripts/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="/stylesheets/index.css">
 </body>
 
 </html>

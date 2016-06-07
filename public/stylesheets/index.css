@@ -1,0 +1,53 @@
+.lrc-wrapper-bg
+{
+    opacity:0.1;
+    width:100%;
+    height:464px;
+    background:black;
+    margin-left:0px;
+    margin-bottom: 5px;
+}
+
+.lrc-container
+{
+    position:relative;
+    margin-top:-444px;
+    display: block;
+    width:80%;
+    color:#fff;
+    margin-left: 28px;
+    font:14px/20px 'microsoft yahei', Helvetica, Arial, 宋体, sans-serif;
+}
+
+@media (min-width: 992px) 
+{
+    body
+    {
+        overflow-x: scroll;    
+    }
+    
+    .body-container
+    {
+        width:1600px;    
+    }
+    
+    .lrc-wrapper-bg
+    {
+        margin-left:-28px;
+    }
+    
+    .lrc-container
+    {
+        margin-left: 0px;
+    }
+    
+    .sidebar, .player
+    {
+        width:380px;
+    }
+    
+    .lyric
+    {
+        width:507px;
+    }
+}
