@@ -19,9 +19,21 @@
     margin-top:-444px;
     display: block;
     width:80%;
+    height:400px;    
     color:#fff;
     margin-left: 28px;
     font:14px/20px 'microsoft yahei', Helvetica, Arial, 宋体, sans-serif;
+    overflow-y: hidden;
+}
+
+.lyric-item
+{
+    margin-bottom: 10px;    
+}
+
+.lyric_cur
+{
+    font-size: 25px;    
 }
 
 .track div
