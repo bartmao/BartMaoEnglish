@@ -28,13 +28,22 @@
 
 .lyric-item
 {
-    margin-bottom: 10px;    
+    margin-bottom: 10px;
+    padding-left: 10px;    
 }
 
 .lyric_cur
 {
     font-size: 25px;    
 }
+
+.lyric-hover
+{
+    border-width: 0 0 0 1px;
+    border-color: green;
+    border-style: solid;
+}
+
 
 .track div
 {
