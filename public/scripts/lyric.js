@@ -1,5 +1,64 @@
-var lyricObj = { url: null, pos: 0, items: [], plainTxt: null };
-var stateObj = { seq: 0, timeframe: null, lyricTxt: [], startTime: null, endTime: null, expectedIndex: 0 };
+"use strict"
+
+var lyricExport = {};
+
+var lyricObj = { url: null, pos: 0, items: [], plainTxt: null, isManual: false };
+var lyricStateObj = { seq: 0, timeframe: null, lyricTxt: [], startTime: null, endTime: null, expectedIndex: 0 };
+
+lyricExport.loadLyric = function loadLyric(url, cb) {
+    lyricObj.url = url;
+
+    $.get(url, function (txt) {
+        lyricObj.plainTxt = txt;
+        while (readLine(lyricHandler));
+        cb(lyricObj);
+    });
+}
+
+lyricExport.loadLyricWithDomsReturn = function loadLyricWithDomsReturn(url, cb) {
+    lyricExport.loadLyric(url, function (lyricObj) {
+        var items = lyricObj.items;
+        var lyricContent = '';
+        for (var i = 0; i < items.length; i++) {
+            lyricContent += '<div class = "lrc-item" lrc_s = "'
+                + items[i].startTime
+                + '" lrc_e = "'
+                + items[i].endTime
+                + '" lrc_seq = "'
+                + items[i].seq
+                + '" >'
+                + items[i].lyricTxt.join('<br/>') + '</div>';
+        }
+
+        $('Body')
+            .on('mouseover', '.lrc-item', function () {
+                $(this).addClass('lrc-hover');
+            })
+            .on('mouseout', '.lrc-item', function () {
+                $(this).removeClass('lrc-hover');
+            });
+        cb(lyricContent);
+    });
+}
+
+lyricExport.findCurLyricItem = function findCurLyricItem() {
+    var s = ad.currentTime;
+    var p = null;
+
+    $.each($('.lrc-item'), function (i, v) {
+        if (parseFloat($(v).attr('lrc_s')) >= s) return false;
+        else p = $(v);
+    });
+
+    if (p && parseFloat(p.attr('lrc_e')) > s)
+        return [p, true];
+    return [p, false];
+}
+
+lyricExport.isManualPlay = function isManualPlay(mode) {
+    if (mode != undefined && mode != null) lyricObj.isManual = mode;
+    return lyricObj.isManual;
+}
 
 function readLine(cb) {
     var start = lyricObj.pos;
@@ -19,38 +78,30 @@ function lyricHandler(line) {
     var trimedLine = line.trim();
 
     if (trimedLine == '') {
-        lyricObj.items.push({ seq: stateObj.seq, timeframe: stateObj.timeframe, lyricTxt: stateObj.lyricTxt, startTime: stateObj.startTime, endTime: stateObj.endTime });
-        stateObj.lyricTxt = [];
-        stateObj.expectedIndex = 0;
+        lyricObj.items.push({ seq: lyricStateObj.seq, timeframe: lyricStateObj.timeframe, lyricTxt: lyricStateObj.lyricTxt, startTime: lyricStateObj.startTime, endTime: lyricStateObj.endTime });
+        lyricStateObj.lyricTxt = [];
+        lyricStateObj.expectedIndex = 0;
     }
 
-    if (stateObj.expectedIndex == 0) {
+    if (lyricStateObj.expectedIndex == 0) {
         var seq = parseInt(line.trim());
         if (!Number.isNaN(seq)) {
-            stateObj.seq = seq;
-            stateObj.expectedIndex++;
+            lyricStateObj.seq = seq;
+            lyricStateObj.expectedIndex++;
         }
     }
-    else if (stateObj.expectedIndex == 1) {
-        stateObj.timeframe = line;
+    else if (lyricStateObj.expectedIndex == 1) {
+        lyricStateObj.timeframe = line;
         var timeframes = line.split('-->');
         var hms = timeframes[0].split(':');
-        stateObj.startTime = parseInt(hms[0]) * 3600 + parseInt(hms[1]) * 60 + parseInt(hms[2]);
+        var ms = timeframes[0].split(',')[1];
+        lyricStateObj.startTime = parseInt(hms[0]) * 3600 + parseInt(hms[1]) * 60 + parseInt(hms[2]) + parseFloat(ms[1] / 1000);
         hms = timeframes[1].split(':');
-        stateObj.endTime = parseInt(hms[0]) * 3600 + parseInt(hms[1]) * 60 + parseInt(hms[2]);
-        stateObj.expectedIndex++;
+        ms = timeframes[1].split(',')[1];
+        lyricStateObj.endTime = parseInt(hms[0]) * 3600 + parseInt(hms[1]) * 60 + parseInt(hms[2]) + parseFloat(ms[1] / 1000);
+        lyricStateObj.expectedIndex++;
     }
     else {
-        stateObj.lyricTxt.push(line);
+        lyricStateObj.lyricTxt.push(line);
     }
-}
-
-function loadLyric(url, cb) {
-    lyricObj = { url: url, pos: 0, items: [], plainTxt: null, seq: 0, };
-
-    $.get(url, function (txt) {
-        lyricObj.plainTxt = txt;
-        while (readLine(lyricHandler));
-        cb(lyricObj);
-    });
 }

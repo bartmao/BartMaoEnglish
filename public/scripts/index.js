@@ -22,16 +22,18 @@ $(ad).on('timeupdate', function () {
     $('.progress-bar').css('width', ad.currentTime / duration * 100 + '%');
     $('#curTime').text(formatTime(ad.currentTime));
 
-    var seq = parseInt(ad.currentTime);
+    $('.lrc-cur').removeClass('lrc-cur');
+    var rst = lyricExport.findCurLyricItem();
+    if (!rst) return;
 
-    var nextLycItem = $('[lyc_s="' + seq + '"]');
-    if (nextLycItem.length != 0
-        && parseInt(nextLycItem.attr('lyc_e')) > ad.currentTime) {
-        $('.lyric_cur').removeClass('lyric_cur');
-        nextLycItem.addClass('lyric_cur');
-
-        $('.lrc-container')[0].scrollTop = nextLycItem.position().top - $('.lyric-item').first().position().top - $('.lrc-wrapper-bg').height() / 2 + nextLycItem.height();
-        console.log('top:' + $('.lrc-container')[0].scrollTop);
+    var curItem = rst[0];
+    if (rst[1]) {
+        curItem.addClass('lrc-cur');
+        var mode = lyricExport.isManualPlay();
+        if (!mode)
+            $('.lrc-container')[0].scrollTop = curItem.position().top
+                - $('.lrc-item').first().position().top
+                - $('.lrc-wrapper-bg').height() / 2 + curItem.height();
     }
 });
 
@@ -41,28 +43,22 @@ $('.progress').click(function (e) {
     console.log(e.offsetX / $(this).width() * duration);
 });
 
-
-loadLyric('lyrics/Friends.S01E01.srt', function (lyricObj) {
-    var items = lyricObj.items;
-    var lyricContent = '';
-    for (var i = 0; i < items.length; i++) {
-        lyricContent += '<div class = "lyric-item" lyc_s = "'
-            + items[i].startTime
-            + '" lyc_e = "'
-            + items[i].endTime
-            + '" lyc_seq = "'
-            + items[i].seq
-            + '" >'
-            + items[i].lyricTxt.join('<br/>') + '</div>';
-    }
-
+lyricExport.loadLyricWithDomsReturn('lyrics/Friends.S01E01.srt', function (lyricContent) {
     $('.lrc-container').html(lyricContent);
-    
-    $('.lyric-item')
-    .mouseover(function () {
-        $(this).addClass('lyric-hover');
-    })
-    .mouseout(function () {
-        $(this).removeClass('lyric-hover');
+    $('.lrc-item').click(function () {
+        ad.currentTime = parseFloat($(this).attr('lrc_s'));
     });
+});
+
+$('.lrc-controller .glyphicon').click(function () {
+    var cur = $('.lrc-controller-cur');
+    var className = $(this).attr('class');
+    if(className.indexOf('lrc-controller-cur') != -1) return;
+    else {
+        if (className.indexOf('glyphicon-magnet') != -1) lyricExport.isManualPlay(false);
+        else lyricExport.isManualPlay(true);
+
+        cur.removeClass('lrc-controller-cur');
+        $(this).addClass('lrc-controller-cur');
+    }
 });
