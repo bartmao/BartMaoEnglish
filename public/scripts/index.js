@@ -45,15 +45,16 @@ $('.progress').click(function (e) {
 
 lyricExport.loadLyricWithDomsReturn('lyrics/Friends.S01E01.srt', function (lyricContent) {
     $('.lrc-container').html(lyricContent);
-    $('.lrc-item').click(function () {
-        ad.currentTime = parseFloat($(this).attr('lrc_s'));
+    $('.lrc-item').click(function (e) {
+        if (e.pageX - $(this).offset().left <= 20) // lyric-item left border
+            ad.currentTime = parseFloat($(this).attr('lrc_s'));
     });
 });
 
 $('.lrc-controller .glyphicon').click(function () {
     var cur = $('.lrc-controller-cur');
     var className = $(this).attr('class');
-    if(className.indexOf('lrc-controller-cur') != -1) return;
+    if (className.indexOf('lrc-controller-cur') != -1) return;
     else {
         if (className.indexOf('glyphicon-magnet') != -1) lyricExport.isManualPlay(false);
         else lyricExport.isManualPlay(true);

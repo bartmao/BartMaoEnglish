@@ -60,8 +60,8 @@ div ::-webkit-scrollbar-thumb {
 .lrc-item
 {
     margin-bottom: 10px;
-    border-width: 0 0 0 1px;
-    border-color: transparent;
+    border-width: 0 0 0 20px;
+    border-color: rgba(0,0,255,0.05);
     border-style: solid;
     padding-left: 10px;    
 }
@@ -73,7 +73,7 @@ div ::-webkit-scrollbar-thumb {
 
 .lrc-hover
 {
-    border-color: green;
+    border-color: rgba(0,0,255,0.1);
 }
 
 
