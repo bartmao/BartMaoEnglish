@@ -76,6 +76,18 @@ div ::-webkit-scrollbar-thumb {
     border-color: rgba(0,0,255,0.1);
 }
 
+.lyric-popover
+{
+    display: block;
+    position:relative;
+    opacity: 0.3 !important
+}
+
+.popover-content
+{
+    opacity: 1;
+    color: black;
+}
 
 .track div
 {

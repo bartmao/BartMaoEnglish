@@ -2,7 +2,7 @@
 
 var lyricExport = {};
 
-var lyricObj = { url: null, pos: 0, items: [], plainTxt: null, isManual: false };
+var lyricObj = { url: null, pos: 0, items: [], plainTxt: null, isManual: false, curScriptBlk: null, curLycItem: null };
 var lyricStateObj = { seq: 0, timeframe: null, lyricTxt: [], startTime: null, endTime: null, expectedIndex: 0 };
 
 lyricExport.loadLyric = function loadLyric(url, cb) {
@@ -30,12 +30,22 @@ lyricExport.loadLyricWithDomsReturn = function loadLyricWithDomsReturn(url, cb) 
                 + items[i].lyricTxt.join('<br/>') + '</div>';
         }
 
-        $('Body')
+        $('body')
             .on('mouseover', '.lrc-item', function () {
                 $(this).addClass('lrc-hover');
             })
             .on('mouseout', '.lrc-item', function () {
                 $(this).removeClass('lrc-hover');
+            })
+            .on('mouseup', '.lrc-item', function (e) {
+                var sel = getSelectionText().trim();
+
+                if (sel) {
+                    lyricObj.curScriptBlk = $('<script src="http://fanyi.youdao.com/openapi.do?keyfrom=MyEnglishLearning&key=932553150&type=data&doctype=jsonp&callback=parseSearch&version=1.1&q=' + sel + '&only=translate" />');
+                    lyricObj.curLycItem = $(this);
+                    $('body').append(lyricObj.curScriptBlk);
+                    console.log(sel);
+                }
             });
         cb(lyricContent);
     });
@@ -104,4 +114,29 @@ function lyricHandler(line) {
     else {
         lyricStateObj.lyricTxt.push(line);
     }
+}
+
+function getSelectionText() {
+    var text = "";
+    if (window.getSelection) {
+        text = window.getSelection().toString();
+    } else if (document.selection && document.selection.type != "Control") {
+        text = document.selection.createRange().text;
+    }
+    return text;
+}
+
+function parseSearch(record) {
+    var popover = $('#popover' + lyricObj.curLycItem.attr('lrc_seq'));
+    if (popover.length == 0) {
+        popover = $('<div id="popover' + lyricObj.curLycItem.attr('lrc_seq') + '" class="popover fade in top lyric-popover"><div class="arrow"></div><div class="popover-content"></div></div>');
+        popover.insertBefore(lyricObj.curLycItem);
+    }
+    var curContent = popover.find('.popover-content').html();
+    if (curContent)
+        popover.find('.popover-content').html(curContent + '<br/>' + record.query + ':' + record.translation[0]);
+    else
+        popover.find('.popover-content').html(record.query + ':' + record.translation[0]);
+
+    lyricObj.curScriptBlk.remove();
 }
