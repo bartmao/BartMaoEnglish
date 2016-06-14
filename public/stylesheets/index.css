@@ -40,6 +40,11 @@ div ::-webkit-scrollbar-thumb {
     padding-right: 10px;
 }
 
+.lrc-playmode
+{
+    display: inline-block;    
+}
+
 .lrc-controller-cur{
     color: white;
 }
@@ -80,7 +85,14 @@ div ::-webkit-scrollbar-thumb {
 {
     display: block;
     position:relative;
-    opacity: 0.3 !important
+    opacity: 0.3 !important;
+    margin-left: 20px;
+}
+
+.lyric-popover .glyphicon-remove
+{
+    color: black;
+    float: right;
 }
 
 .popover-content

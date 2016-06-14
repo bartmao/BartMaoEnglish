@@ -51,7 +51,7 @@ lyricExport.loadLyricWithDomsReturn('lyrics/Friends.S01E01.srt', function (lyric
     });
 });
 
-$('.lrc-controller .glyphicon').click(function () {
+$('.lrc-playmode .glyphicon').click(function () {
     var cur = $('.lrc-controller-cur');
     var className = $(this).attr('class');
     if (className.indexOf('lrc-controller-cur') != -1) return;
@@ -63,3 +63,7 @@ $('.lrc-controller .glyphicon').click(function () {
         $(this).addClass('lrc-controller-cur');
     }
 });
+
+$('.lrc-controller .glyphicon-trash').click(function () {
+    $('.popover').remove();
+})
