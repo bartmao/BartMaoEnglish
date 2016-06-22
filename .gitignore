@@ -1,3 +1,5 @@
-#.vscode/
-#public/audios/
+.vscode/
+public/audios/
 public/videos/
+bin/
+typings/
