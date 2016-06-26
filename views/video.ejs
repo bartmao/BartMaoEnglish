@@ -93,7 +93,7 @@
         <div class="panel panel-default">
           <ul class="list-group" style="text-align:center;">
             <li class="list-group-item">
-              <video autoplay="" controls="" preload="metadata" src="videos/Friends.S01E01.webm" width="240" height="240">Your browser does not support the video element</video>
+              <video data-dashjs-player autoplay src="/videos/dash/dash.mpd" width="240" height="240"></video>
             </li>
             <li class="list-group-item">
               <b>S01E01.The One Where It AII Began</b><br>
@@ -102,9 +102,7 @@
             <li class="list-group-item" style="font-size:20px;">
               <div class="row controller">
                 <div class="col-xs-3"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></div>
-                <div class="col-xs-3"><span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span></div>
-                <div class="col-xs-3"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span></div>
-                <div class="col-xs-3"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></div>
+                <div class="col-xs-3"><span class="glyphicon glyphicon-record" aria-hidden="true"></span></div>
               </div>
             </li>
           </ul>
@@ -144,9 +142,10 @@
   <!-- Latest compiled and minified JavaScript -->
   <script src="/scripts/bootstrap.min.js"></script>
   <script src="/scripts/lyric.js"></script>
-  <script src="/scripts/index.js"></script>
   <script src="/scripts/video.js"></script>
+  <script src="/scripts/dash.all.min.js"></script>
   <link rel="stylesheet" href="/stylesheets/index.css">
+  <link rel="stylesheet" href="/stylesheets/video.css">
 </body>
 
 </html>
