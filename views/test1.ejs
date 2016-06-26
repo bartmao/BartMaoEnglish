@@ -1,14 +1,47 @@
+<!DOCTYPE html>
 <html>
+<head>
+
+  <meta name="description" content="Simplest possible examples of HTML, CSS and JavaScript." />
+  <meta name="author" content="//samdutton.com">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta itemprop="name" content="simpl.info: simplest possible examples of HTML, CSS and JavaScript">
+  <meta itemprop="image" content="/icon_192x192.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta id="theme-color" name="theme-color" content="#fff">
+
+  <base target="_blank">
+
+  <title>MediaStream Recording</title>
+
+  <link rel="canonical" href="https://simpl.info/mediarecorder" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="css/main.css" />
+
+</head>
+
 <body>
-<script src="http://cdn.dashjs.org/latest/dash.all.min.js"></script>
-<style>
-    video {
-       width: 640px;
-       height: 360px;
-    }
-</style>
-   <div>
-       <video data-dashjs-player autoplay src="/videos/dash/dash.mpd" controls></video>
-   </div>
+
+  <div id="container">
+
+    <h1><a href="../index.html" title="simpl.info home page">simpl.info</a> MediaStream&nbsp;Recording</h1>
+
+    <p>This demo requires Firefox 29 or later, or Chrome 47 or later with <strong>Enable experimental Web Platform features</strong> enabled from chrome://flags.</p>
+
+    <p>For more information see the MediaStream Recording API <a href="http://w3c.github.io/mediacapture-record/MediaRecorder.html" title="W3C MediaStream Recording API Editor's Draft">Editor's&nbsp;Draft</a>.</p>
+
+    <video id="gum" autoplay muted></video>
+    <video id="recorded" autoplay loop></video>
+
+    <div>
+      <button id="record">Start Recording</button>
+      <button id="play" disabled>Play</button>
+      <button id="download" disabled>Download</button>
+    </div>
+
+  </div>
+
+  <script src="scripts/video.js"></script>
+
 </body>
 </html>
