@@ -1,47 +1,42 @@
-<!DOCTYPE html>
-<html>
-<head>
+<video autoplay controls></video>
+<img src="">
 
-  <meta name="description" content="Simplest possible examples of HTML, CSS and JavaScript." />
-  <meta name="author" content="//samdutton.com">
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <meta itemprop="name" content="simpl.info: simplest possible examples of HTML, CSS and JavaScript">
-  <meta itemprop="image" content="/icon_192x192.png">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta id="theme-color" name="theme-color" content="#fff">
+<canvas></canvas>
+<script src="/scripts/jquery.min.js"></script>
+<script src="/scripts/recorder.js"></script>
+<button id='start'>Start</button>
+<button id='stop'>Stop</button>
+<script>
+  $('#start').click(function()
+  {
+  recorder.start();
+  });
+  $('#stop').click(function()
+  {
+    recorder.stop();
+    recorder.download();
+  });
 
-  <base target="_blank">
+  // var video = document.querySelector('video');
+  // var canvas = document.querySelector('canvas');
+  // var ctx = canvas.getContext('2d');
+  // var localMediaStream = null;
 
-  <title>MediaStream Recording</title>
+  // function snapshot() {
+  //   if (localMediaStream) {
+  //     ctx.drawImage(video, 0, 0);
+  //     // "image/webp" works in Chrome.
+  //     // Other browsers will fall back to image/png.
+  //     document.querySelector('img').src = canvas.toDataURL('image/webp');
+  //   }
+  // }
 
-  <link rel="canonical" href="https://simpl.info/mediarecorder" />
-  <link rel="stylesheet" href="../css/main.css" />
-  <link rel="stylesheet" href="css/main.css" />
+  // video.addEventListener('click', snapshot, false);
 
-</head>
+  // // Not showing vendor prefixes or code that works cross-browser.
+  // navigator.webkitGetUserMedia ({audio:true}, function(stream) {
+  //   video.src = window.URL.createObjectURL(stream);
+  //   localMediaStream = stream;
+  // }, function(err){});
 
-<body>
-
-  <div id="container">
-
-    <h1><a href="../index.html" title="simpl.info home page">simpl.info</a> MediaStream&nbsp;Recording</h1>
-
-    <p>This demo requires Firefox 29 or later, or Chrome 47 or later with <strong>Enable experimental Web Platform features</strong> enabled from chrome://flags.</p>
-
-    <p>For more information see the MediaStream Recording API <a href="http://w3c.github.io/mediacapture-record/MediaRecorder.html" title="W3C MediaStream Recording API Editor's Draft">Editor's&nbsp;Draft</a>.</p>
-
-    <video id="gum" autoplay muted></video>
-    <video id="recorded" autoplay loop></video>
-
-    <div>
-      <button id="record">Start Recording</button>
-      <button id="play" disabled>Play</button>
-      <button id="download" disabled>Download</button>
-    </div>
-
-  </div>
-
-  <script src="scripts/video.js"></script>
-
-</body>
-</html>
+</script>
