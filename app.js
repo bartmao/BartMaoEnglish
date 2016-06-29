@@ -4,13 +4,15 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var busboy = require('connect-busboy');
 
 var routes = require('./routes/index');
 var videos = require('./routes/video');
 var users = require('./routes/users');
 var tests = require('./routes/test');
+var testapi = require('./routes/testapi');
 var upload = require('./routes/upload');
-
+var myfile = require('./modules/myfile');
 var app = express();
 
 // view engine setup
@@ -23,9 +25,10 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(busboy());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', tests);
+app.use('/', testapi);
 app.use('/audios', routes);
 app.use('/users', users);
 app.use('/test', tests);
