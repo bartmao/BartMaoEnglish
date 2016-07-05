@@ -5,8 +5,10 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var busboy = require('connect-busboy');
+
+var expressSession = require('express-session');
 var redis = require('redis');
-var redis_session = require('redis-session');
+var RedisStore = require('connect-redis')(expressSession);
 
 var myfile = require('./modules/myfile');
 
@@ -33,13 +35,11 @@ app.use(busboy());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // set up redis session
-var session = new redis_session({
-  host: myfile.readConfig('serverName'),
-  port: 6379,
-  resave: false,
-  saveUninitialized: false,
-  secret: myfile.readConfig('session','secret'),
-});
+var redisClient = redis.createClient(8889, myfile.readConfig('serverName'),{auth_pass: '', tls: {servername: 'bartmao.redis.cache.windows.net'}});
+redisClient.on('error', function(err) {
+     console.log('Redis error: ' + err);
+}); 
+app.use(expressSession({ store: new RedisStore({ client: redisClient }), secret: myfile.readConfig('session', 'secret'), resave: true, saveUninitialized: false }));
 
 app.use('/', testapi);
 app.use('/audios', routes);

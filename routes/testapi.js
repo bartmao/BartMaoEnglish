@@ -6,12 +6,20 @@ var myfs = require('../modules/myfile.js');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  postSpeechSrv(res);
+  if (!req.session.site)
+    req.session.site = 'bart' + new Date().toISOString();//{ name: new Date().toISOString() }'';
+  req.session.save(function(er){ console.log(er);});
+  res.write(req.session.site);
+  res.end();
+  //res.render('test1');
+  
+  // res.end();
+  //postSpeechSrv(res);
 });
 
 function postSpeechSrv(clientRes) {
   var content = 'grant_type=client_credentials&client_id=<Your subscription key>&client_secret=<Your subscription key>&scope=https%3A%2F%2Fspeech.platform.bing.com';
-  
+
   var options = {
     hostname: 'oxford-speech.cloudapp.net',
     path: '/token/issueToken',
