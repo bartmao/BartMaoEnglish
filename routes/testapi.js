@@ -2,18 +2,20 @@ var express = require('express');
 var router = express.Router();
 var http = require('http');
 
-var myfs = require('../modules/myfile.js');
+var myfs = require('../modules/myfile');
+var myspeech = require('../modules/myspeech');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  if (!req.session.site)
-    req.session.site = 'bart' + new Date().toISOString();//{ name: new Date().toISOString() }'';
-  req.session.save(function(er){ console.log(er);});
-  res.write(req.session.site);
-  res.end();
-  //res.render('test1');
-  
+  myspeech.startRecognition();
+  // if (!req.session.site)
+  //   req.session.site = 'bart' + new Date().toISOString();//{ name: new Date().toISOString() }'';
+  // //req.session.save(function(er){ console.log(er);});
+  // res.write(req.session.site);
   // res.end();
+  // //res.render('test1');
+
+  // // res.end();
   //postSpeechSrv(res);
 });
 

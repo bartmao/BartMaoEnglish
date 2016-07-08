@@ -11,6 +11,7 @@ var redis = require('redis');
 var RedisStore = require('connect-redis')(expressSession);
 
 var myfile = require('./modules/myfile');
+var myglobals = require('./modules/myglobals');
 
 var routes = require('./routes/index');
 var videos = require('./routes/video');
@@ -18,7 +19,7 @@ var users = require('./routes/users');
 var tests = require('./routes/test');
 var testapi = require('./routes/testapi');
 var upload = require('./routes/upload');
-var myfile = require('./modules/myfile');
+
 var app = express();
 
 // view engine setup
@@ -35,10 +36,15 @@ app.use(busboy());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // set up redis session
-var redisClient = redis.createClient(8889, myfile.readConfig('serverName'),{auth_pass: '', tls: {servername: 'bartmao.redis.cache.windows.net'}});
-redisClient.on('error', function(err) {
-     console.log('Redis error: ' + err);
-}); 
+var redisClient = redis.createClient(8890, myfile.readConfig('redis', 'serverName'), { auth_pass: myfile.readConfig('redis', 'key') });
+redisClient.on('error', function (err) {
+  console.log('Redis error: ' + err);
+});
+redisClient.on('ready', function () {
+  console.log('Redis is ready');
+  myglobals.redis = redisClient;
+});
+
 app.use(expressSession({ store: new RedisStore({ client: redisClient }), secret: myfile.readConfig('session', 'secret'), resave: true, saveUninitialized: false }));
 
 app.use('/', testapi);
