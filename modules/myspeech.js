@@ -2,16 +2,17 @@
 
 var http = require('http');
 var https = require('https');
-var myglobals = require('./myglobals');
-var myfile = require('./myfile');
 var fs = require('fs');
 var util = require('util');
+
+var myglobals = require('./myglobals');
+var myfile = require('./myfile');
 
 var myspeech = {};
 
 myspeech.startRecognition = function (voiceStream) {
-    myglobals.redis.get('speech-timestamp', (e, s) => {
-        if (new Date() - Date.parse(s) >= 1000 * 60 * 8)
+    myglobals.getVar('speech-timestamp', (e, s) => {
+        if (!s || new Date() - Date.parse(s) >= 1000 * 60 * 8)
             speechAuthenticate(postVoiceData);
         else postVoiceData();
     });
@@ -33,19 +34,14 @@ function speechAuthenticate(cb) {
     var req = http.request(options, res => {
         res.on('data', (chuck) => {
             var v = JSON.parse(chuck);
-            myglobals.redis.set('speech_token', v['access_token']);
-            myglobals.redis.set('speech-timestamp', new Date());
+            myglobals.setVar('speech_token', v['access_token']);
+            myglobals.setVar('speech-timestamp', new Date());
 
             console.log('access_token:' + v["access_token"]);
             console.log('timestamp:' + new Date());
 
-            cb || cb();
+            cb && cb();
         });
-
-        // myfs.savetempfile(res, function () {
-        //     clientRes.write(new Date().toUTCString());
-        //     clientRes.end();
-        // });
     });
 
     req.write(content);
@@ -53,7 +49,7 @@ function speechAuthenticate(cb) {
 }
 
 function postVoiceData() {
-    myglobals.redis.get('speech_token', (e, key) => {
+    myglobals.getVar('speech_token', (e, key) => {
         var stat = fs.statSync('./public/demo/audios/1.wav');
 
         var options = {

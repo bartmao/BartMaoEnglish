@@ -51,16 +51,15 @@ lyricExport.loadLyricWithDomsReturn = function loadLyricWithDomsReturn(url, cb) 
     });
 }
 
-lyricExport.findCurLyricItem = function findCurLyricItem() {
-    var s = ad.currentTime;
+lyricExport.findCurLyricItem = function findCurLyricItem(curTime) {
     var p = null;
 
     $.each($('.lrc-item'), function (i, v) {
-        if (parseFloat($(v).attr('lrc_s')) >= s) return false;
+        if (parseFloat($(v).attr('lrc_s')) >= curTime) return false;
         else p = $(v);
     });
 
-    if (p && parseFloat(p.attr('lrc_e')) > s)
+    if (p && parseFloat(p.attr('lrc_e')) > curTime)
         return [p, true];
     return [p, false];
 }

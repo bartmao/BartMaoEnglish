@@ -6,12 +6,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var busboy = require('connect-busboy');
 
-var expressSession = require('express-session');
-var redis = require('redis');
-var RedisStore = require('connect-redis')(expressSession);
-
 var myfile = require('./modules/myfile');
 var myglobals = require('./modules/myglobals');
+var mysession = require('./modules/mysession');
 
 var routes = require('./routes/index');
 var videos = require('./routes/video');
@@ -35,19 +32,9 @@ app.use(cookieParser());
 app.use(busboy());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// set up redis session
-var redisClient = redis.createClient(8890, myfile.readConfig('redis', 'serverName'), { auth_pass: myfile.readConfig('redis', 'key') });
-redisClient.on('error', function (err) {
-  console.log('Redis error: ' + err);
-});
-redisClient.on('ready', function () {
-  console.log('Redis is ready');
-  myglobals.redis = redisClient;
-});
+app.use(mysession.initSession());
 
-app.use(expressSession({ store: new RedisStore({ client: redisClient }), secret: myfile.readConfig('session', 'secret'), resave: true, saveUninitialized: false }));
-
-app.use('/', testapi);
+app.use('/', routes);
 app.use('/audios', routes);
 app.use('/users', users);
 app.use('/test', tests);

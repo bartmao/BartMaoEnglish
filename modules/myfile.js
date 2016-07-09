@@ -14,7 +14,7 @@ myfile.savetempfile = function (stream, cb) {
 }
 
 myfile.readConfig = function (key, subkey) {
-  var cfg = fs.readJsonSync(__dirname+ '\\..\\config.json', { throws: false });
+  var cfg = fs.readJsonSync('./config.json', { throws: false });
   if (cfg && key) {
     if (subkey && cfg[key] != undefined) return cfg[key][subkey];
     return cfg[key];
