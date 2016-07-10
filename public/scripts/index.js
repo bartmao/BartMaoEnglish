@@ -8,7 +8,7 @@ function formatTime(seconds) {
     return minstr + ":" + secstr;
 }
 
-var ad = new Audio("audios/Friends.S01E02.mp3");
+var ad = new Audio("audios/Friends.S01E01.mp3");
 var duration = 29 * 60 + 40;
 $('body').on('click', '.glyphicon-play', function () {
     ad.play();
@@ -22,13 +22,11 @@ $(ad).on('timeupdate', function () {
     $('.progress-bar').css('width', ad.currentTime / duration * 100 + '%');
     $('#curTime').text(formatTime(ad.currentTime));
 
-    $('.lrc-cur').removeClass('lrc-cur');
-    var rst = lyricExport.findCurLyricItem(ad.currentTime);
+    var rst = lyricExport.updateCur(ad.currentTime);
     if (!rst) return;
 
     var curItem = rst[0];
     if (rst[1]) {
-        curItem.addClass('lrc-cur');
         var mode = lyricExport.isManualPlay();
         if (!mode)
             $('.lrc-container')[0].scrollTop = curItem.position().top
@@ -37,13 +35,12 @@ $(ad).on('timeupdate', function () {
     }
 });
 
-
 $('.progress').click(function (e) {
     ad.currentTime = e.offsetX / $(this).width() * duration;
     console.log(e.offsetX / $(this).width() * duration);
 });
 
-lyricExport.loadLyricWithDomsReturn('lyrics/Friends.S01E02.srt', function (lyricContent) {
+lyricExport.loadLyricWithDomsReturn('lyrics/Friends.S01E01.srt', function (lyricContent) {
     $('.lrc-container').html(lyricContent);
     $('.lrc-item').click(function (e) {
         if (e.pageX - $(this).offset().left <= 20) // lyric-item left border
@@ -67,3 +64,5 @@ $('.lrc-playmode .glyphicon').click(function () {
 $('.lrc-controller .glyphicon-trash').click(function () {
     $('.popover').remove();
 })
+
+$('.glyphicon-record').click(function () { lyric_spchreg.start() });

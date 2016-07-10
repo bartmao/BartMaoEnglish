@@ -10,15 +10,15 @@ var myfile = require('./myfile');
 
 var myspeech = {};
 
-myspeech.startRecognition = function (voiceStream) {
+myspeech.startRecognition = function (voiceStream, cb) {
     myglobals.getVar('speech-timestamp', (e, s) => {
         if (!s || new Date() - Date.parse(s) >= 1000 * 60 * 8)
-            speechAuthenticate(postVoiceData);
-        else postVoiceData();
+            speechAuthenticate(voiceStream, cb);
+        else postVoiceData(voiceStream, cb);
     });
 };
 
-function speechAuthenticate(cb) {
+function speechAuthenticate(voiceStream, cb) {
     var key = myfile.readConfig('speech', 'key');
     var content = 'grant_type=client_credentials&client_id=' + key + '&client_secret=' + key + '&scope=https%3A%2F%2Fspeech.platform.bing.com';
     console.log(content);
@@ -39,8 +39,7 @@ function speechAuthenticate(cb) {
 
             console.log('access_token:' + v["access_token"]);
             console.log('timestamp:' + new Date());
-
-            cb && cb();
+            postVoiceData(voiceStream, cb);
         });
     });
 
@@ -48,9 +47,9 @@ function speechAuthenticate(cb) {
     req.end();
 }
 
-function postVoiceData() {
+function postVoiceData(voiceStream, cb) {
     myglobals.getVar('speech_token', (e, key) => {
-        var stat = fs.statSync('./public/demo/audios/1.wav');
+        //var stat = fs.statSync('./public/demo/audios/1.wav');
 
         var options = {
             hostname: 'speech.platform.bing.com',
@@ -58,8 +57,8 @@ function postVoiceData() {
             method: 'post',
             headers: {
                 'Content-Type': 'audio/wav; samplerate=16000',
-                'Authorization': 'Bearer ' + key,
-                'Content-Length': stat.size
+                'Authorization': 'Bearer ' + key
+                //'Content-Length': stat.size
             }
         };
 
@@ -68,11 +67,14 @@ function postVoiceData() {
             if (res.statusCode == 200)
                 res.on('data', chunk => {
                     var r = JSON.parse(chunk);
-                    console.log(r.header.lexical);
+                    console.log(r);
+                    if (r.header.status != 'error')
+                        cb && cb(r.header.lexical);
                 });
         });
 
-        var readable = fs.createReadStream('./public/demo/audios/1.wav');
+        //var readable = fs.createReadStream('./public/demo/audios/1.wav');
+        var readable = voiceStream;
         readable.pipe(req, { end: false });
         readable.on('end', e => {
             console.log('file send');
