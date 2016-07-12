@@ -8,7 +8,7 @@ var lyric_spchreg = $({
     var _recorder = null;
     var audio_context;
     var workingProgress = 0;
-    var minPostInterval = 10;
+    var minPostInterval = 2;
 
     lyric_spchreg.start = function start(params) {
         initRecorder();
