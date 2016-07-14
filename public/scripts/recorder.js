@@ -61,7 +61,9 @@ var Recorder = exports.Recorder = (function () {
 
             var buffer = [];
             for (var channel = 0; channel < _this.config.numChannels; channel++) {
-                buffer.push(e.inputBuffer.getChannelData(channel));
+                var cdata = e.inputBuffer.getChannelData(channel);
+                console.log(cdata);
+                buffer.push(cdata);
             }
             _this.worker.postMessage({
                 command: 'record',
@@ -190,7 +192,7 @@ var Recorder = exports.Recorder = (function () {
             function encodeWAV(samples) {
                 var buffer = new ArrayBuffer(44 + samples.length * 2);
                 var view = new DataView(buffer);
-
+console.log(sampleRate);
                 /* RIFF identifier */
                 writeString(view, 0, 'RIFF');
                 /* RIFF chunk length */

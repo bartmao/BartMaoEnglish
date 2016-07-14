@@ -1,5 +1,5 @@
 'use strict'
-// dependency: recorder.js, lyrics.js
+// dependency: myrecorder.js, lyrics.js
 
 var lyric_spchreg = $({
 });
