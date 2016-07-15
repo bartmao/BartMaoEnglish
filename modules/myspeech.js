@@ -68,8 +68,7 @@ function postVoiceData(voiceStream, cb) {
                 res.on('data', chunk => {
                     var r = JSON.parse(chunk);
                     console.log(r);
-                    if (r.header.status != 'error')
-                        cb && cb(r.header.lexical);
+                    cb && cb(r.header.status, r.header.lexical);
                 });
         });
 

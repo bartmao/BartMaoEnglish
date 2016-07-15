@@ -1,0 +1,80 @@
+<script src="/scripts/jquery.min.js">
+
+</script>
+<script src="/scripts/myrecorder.js"></script>
+<script src="/scripts/uploader.js"></script>
+<button id='start'>Start</button>
+<button id='stop'>Stop</button>
+<button id='export'>Export</button>
+<button id='upload'>Begin Recognition</button>
+<div style='clear:both;'></div>
+<div id='d1' style='overflow:scroll;height:500px;width:250px;float:left;'>
+  <ul>
+  </ul>
+</div>
+<div id='d2' style='float:left;height:500px;width:500px;'>
+</div>
+<script>
+  myrecorder.on('gotBuffer.myrecorder', function(e,d){
+  $('ul').append('<li>'+d[0]+'</li>');
+  $('#d1').scrollTop($('ul').height() + $('#d1').scrollTop());
+  //$('#d2').append('<div style="backgroundcolor:green;"></div>');
+}); 
+   
+$('#start').click(function()
+{
+  myrecorder.start();
+});
+
+$('#stop').click(function(){
+  myrecorder.stop();
+});
+
+$('#export').click(function(){
+  var url = URL.createObjectURL(myrecorder.getWAVBlob());
+  var hf = document.createElement('a');
+  hf.download = new Date().toISOString() + '.wav';
+  hf.innerHTML = hf.download;
+  hf.href = url;
+  $('body').append(hf);
+});
+
+var uploading =  0;
+
+$('#upload').click(function(){
+  if(uploading == 0){
+      uploading = 1;
+      console.log('started..');
+      $('#upload').text('Stop Recognition');
+      cycleStart();
+  }
+  else{
+    uploading = 0;
+    $('#upload').text('Begin Recognition');
+    stopAndUpload();
+    console.log('stopped..');
+  }
+});
+
+function cycleStart(){
+  myrecorder.start();
+  setTimeout(function(){
+    myrecorder.stop();
+    stopAndUpload();
+    if(uploading == 1)
+      cycleStart();
+  }, 10 * 1000);
+}
+
+function stopAndUpload(){
+    myrecorder.stop();
+    
+    var form = new FormData();
+    form.append('blob', myrecorder.getWAVBlob());
+    
+    var req = new XMLHttpRequest();
+    req.open('POST', '../Upload');
+    req.send(form);
+}
+
+</script>

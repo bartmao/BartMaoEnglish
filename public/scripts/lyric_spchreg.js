@@ -5,7 +5,7 @@ var lyric_spchreg = $({
 });
 
 (function () {
-    var _recorder = null;
+    var initialled = false;
     var audio_context;
     var workingProgress = 0;
     var minPostInterval = 2;
@@ -34,41 +34,17 @@ var lyric_spchreg = $({
     }
 
     function initRecorder() {
-        if (_recorder) return;
-
-        try {
-            // webkit shim
-            window.AudioContext = window.AudioContext || window.webkitAudioContext;
-            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
-            window.URL = window.URL || window.webkitURL;
-
-            audio_context = new AudioContext;
-        } catch (e) {
-            console.error('No web audio support in this browser!');
-        }
-
-        navigator.getUserMedia({ audio: true }, startUserMedia, function (e) {
-            console.error('No live audio input: ' + e);
-        });
-
-    }
-
-    function startUserMedia(stream) {
-        var input = audio_context.createMediaStreamSource(stream);
-        _recorder = new Recorder(input, { numChannels: 1 });
+        if (initialled) return;
     }
 
     function startRecording() {
         console.log('start recording:'+ new Date());
-        _recorder && _recorder.record();
+        myrecorder.start();
     }
 
     function stopRecording() {
         console.log('stop recording'+ new Date());
-        _recorder && _recorder.stop();
-        _recorder.exportWAV(function (blob) {
-            uploader.uploadBlob(blob);
-        });
-        _recorder.clear();
+        myrecorder.stop();
+        uploader.uploadBlob(myrecorder.getWAVBlob());
     }
 })();
