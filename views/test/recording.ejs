@@ -59,10 +59,11 @@ $('#upload').click(function(){
 function cycleStart(){
   myrecorder.start();
   setTimeout(function(){
-    myrecorder.stop();
-    stopAndUpload();
-    if(uploading == 1)
+        if(uploading == 1){
+      stopAndUpload();
+
       cycleStart();
+}
   }, 10 * 1000);
 }
 

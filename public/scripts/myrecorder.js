@@ -95,7 +95,7 @@ var myrecorder = $({});
         /* sample rate */
         view.setUint32(24, sampleRate, true);
         /* byte rate (sample rate * block align) */
-        view.setUint32(28, sampleRate * 4, true);
+        view.setUint32(28, sampleRate * 2, true);
         /* block align (channel count * bytes per sample) */
         view.setUint16(32, channelNum * 2, true);
         /* bits per sample */
@@ -123,7 +123,7 @@ var myrecorder = $({});
     }
 
     function downSampleRate(orginSr, tarSr, buf) {
-        if(orginSr == tarSr) return buf;
+        if(orginSr == tarSr) return buf.slice();
         
         var ratio = orginSr / tarSr;
         var newBuf = new Float32Array(buf.length / ratio);
