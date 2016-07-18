@@ -9,7 +9,7 @@ var myrecorder = $({});
     var buf = [];
     var totalLen = 0;
     var channelNum = 1;
-    var sampleRate = 16000; 
+    var sampleRate = 16000;
     var defaultSampleRate = 0;// default sample rate: chrome/48000
     var ctx = null;
 
@@ -18,10 +18,12 @@ var myrecorder = $({});
         buf = [];
         totalLen = 0;
         isRecording = true;
+        myrecorder.trigger('start.myrecorder');
     }
 
     myrecorder.stop = function () {
         isRecording = false;
+        myrecorder.trigger('stop.myrecorder');
     }
 
     myrecorder.getWAVBlob = function () {
@@ -40,7 +42,7 @@ var myrecorder = $({});
         if (initialled) return;
 
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
-        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
+        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
         window.URL = window.URL || window.webkitURL;
 
         var cxt = new AudioContext();
@@ -51,7 +53,7 @@ var myrecorder = $({});
 
             var processNode = (cxt.createScriptProcessor || cxt.createJavaScriptNode).call(cxt, 1024 * 4, channelNum, channelNum);
             processNode.onaudioprocess = function (e) {
-                if(defaultSampleRate == 0) defaultSampleRate = e.inputBuffer.sampleRate;
+                if (defaultSampleRate == 0) defaultSampleRate = e.inputBuffer.sampleRate;
                 popluateBuf(e);
             };
             streamNode.connect(processNode);
@@ -67,9 +69,9 @@ var myrecorder = $({});
         var f = e.inputBuffer;
         var cdata = f.getChannelData(channelNum - 1);
         var downsampledData = downSampleRate(defaultSampleRate, sampleRate, cdata);
-        
+
         myrecorder.trigger('gotBuffer.myrecorder', [downsampledData]);
-        
+
         buf.push(downsampledData);
         totalLen += downsampledData.length;
     }
@@ -123,10 +125,10 @@ var myrecorder = $({});
     }
 
     function downSampleRate(orginSr, tarSr, buf) {
-        if(orginSr == tarSr) return buf.slice();
-        
-        var ratio = orginSr / tarSr;
-        var newBuf = new Float32Array(buf.length / ratio);
+        if (orginSr == tarSr) return buf.slice();
+
+        var ratio = orginSr / tarSr - (orginSr % tarSr) / tarSr;
+        var newBuf = new Float32Array(buf.length / ratio - (buf.length % ratio) / ratio);
         var newBufOffset = 0;
         var bufOffset = 0;
 
