@@ -77,14 +77,12 @@ var lyric_spchreg = $({
     function showModeProgressBlk(seq, s, e) {
         var item = $('div[lrc_seq="' + seq + '"]');
         var pos = item.offset();
-        var div = item.clone().html('');
-        // $('body').append(div);
-        // //setTimeout(div.remove(), e - s);
-        // div.css('position', 'absolute')
-        //     .css('left', pos.left + 'px')
-        //     .css('top', pos.top + 'px')
-        //     .css('height', item.height() + 'px')
-        //     .css('width', item.width() + 'px');
+        var divWrapper = $('<div class = "record-progress">');
+        divWrapper.html(item.html());
+        item.text('');        
+        item.append(divWrapper);
+        divWrapper.animate({width:"0px"}, (e-s)*1000);
+        //setTimeout((function(d){d.remove();})(div), (e - s) * 1000);
 
     }
 
