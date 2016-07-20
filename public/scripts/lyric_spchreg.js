@@ -10,6 +10,8 @@ var lyric_spchreg = $({
     var workingProgress = 0;
     var minPostInterval = 2;
 
+    var progressBar = $('<div class = "record-progress"></div>');
+
     var curSeq = 0;
     lyric_spchreg.start = function start(params) {
         initRecorder();
@@ -44,6 +46,9 @@ var lyric_spchreg = $({
 
     function initRecorder() {
         if (initialled) return;
+
+        $('body').append(progressBar);
+        initialled = true;
     }
 
     function startRecording() {
@@ -75,13 +80,23 @@ var lyric_spchreg = $({
     }
 
     function showModeProgressBlk(seq, s, e) {
-        var item = $('div[lrc_seq="' + seq + '"]');
+        var item = $('.lrc-cur');
+        if(!item) return;
+        
         var pos = item.offset();
-        var divWrapper = $('<div class = "record-progress">');
-        divWrapper.html(item.html());
-        item.text('');        
-        item.append(divWrapper);
-        divWrapper.animate({width:"0px"}, (e-s)*1000);
+        var height = item.height();
+        var width = item.width();
+        
+        var divContent = $('<div class = "record-progress-content"></div>');
+        //divContent.html(item.html());
+        //item.text('');
+        progressBar.append(divContent);
+        progressBar.css('top', pos.top + 'px');
+        progressBar.css('left', pos.left + 'px');
+        progressBar.css('height', height + 'px');
+        progressBar.css('width', width + 'px');
+
+        //divWrapper.animate({ width: "0px" }, (e - s) * 1000);
         //setTimeout((function(d){d.remove();})(div), (e - s) * 1000);
 
     }
