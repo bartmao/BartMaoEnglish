@@ -1,38 +1,81 @@
-
 <script src="/scripts/jquery.min.js"></script>
-<script src="/scripts/myrecorder.js"></script>
 <button id='start'>Start</button>
 <button id='stop'>Stop</button>
 <button id='export'>Export</button>
+
+<div class='outer'>
+  TEstldkjfgldsjflkdsjfkldsjflksTEstldkjfgldsjflkdsjfkldsjflksTEstldkjfgldsjflkdsjfkldsjflksTEstldkjfgldsjflkdsjfkldsjflks
+</div>
 <script>
-  myrecorder.init();
 
-  $('#start').click(function()
-  {
-myrecorder.start();
-  });
+$('.start').click(function(){
 
+});
+
+  var isstop = false;
   $('#stop').click(function(){
-myrecorder.stop();
+    isstop = true;
   });
+$('#start').click(function(){
+  isstop = false;
 
-  $('#export').click(function(){
-    // var oneBuf = new Float32Array(totalLen);
-    // var offset = 0;
-    // for(var i=0;i<buf.length;++i){
-    //   oneBuf.set(buf[i], offset);
-    //   offset += buf[i].length;
-    // }
-    
-    // var encodedBuf = encodeWAV(oneBuf);
-    // var blob = new Blob([encodedBuf], {type:'audio/wav'});
-    // console.log(encodedBuf);
-    
-    var url = URL.createObjectURL(myrecorder.getWAVBlob());
-    var hf = document.createElement('a');
-    hf.download = new Date().toISOString() + '.wav';
-    hf.innerHTML = hf.download;
-    hf.href = url;
-    $('body').append(hf);
-  });
+  var target = $('.outer');
+
+  var div1 = $('<div class="progress-wrapper">');
+  var div2 = $('<div class="progress-mask">');
+  div1.html(target.html());
+  div1.append(div2);
+  target.html('');
+  target.append(div1);
+
+   div1.css('position', 'relative');
+   div1.css('overflow', 'visible');
+
+    div2.css('right', '0px');
+    div2.css('position','absolute');
+    div2.height(target.height()+'px');
+    div2.width(target.width()+'px');
+    div2.css('width', '100%');
+    div2.css('height', '100%');
+    div2.css('left', div1.offset().left+'px');
+    div2.css('background-color', 'rgba(255,0,0,0.2)');
+  cycleW(100);
+
+  function cycleW(widthPer){
+    if(widthPer<0) return;
+    if(!isstop){
+    $('.progress-mask').css('width', widthPer + '%');
+      setTimeout(function(){
+        cycleW(leftPer -1);
+  }, 10);}
+}
+});
+
+
 </script>
+<style>
+  body{padding:0;margin:0;}
+  .progress-wrapper {
+    /*position:relative;
+    overflow:visible; */
+  }
+  
+  .progress-mask {
+    /*position: absolute;
+    right: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,0,0,0.5);
+    display: inline-block;*/
+  }
+/*
+  .outer{
+    position: relative;
+    overflow: visible;
+    background-color: green;
+  }*/
+
+  .inner{
+
+  }
+</style>

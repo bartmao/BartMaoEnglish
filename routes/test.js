@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/', function(req, res, next) {
-  res.render('test1');
+  res.render('test');
 });
 
 router.get('/Recording', function(req, res, next) {
