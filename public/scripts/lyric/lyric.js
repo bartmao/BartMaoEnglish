@@ -1,18 +1,22 @@
-"use strict"
-
-
 (function ($) {
+    'use strict'
 
-    $.fn.makeLyric = function(){
+    var host = null;
+    var src = null;
 
+    $.fn.makeLyric = function () {
+        host = this;
+        src = this.attr('lyc_src');
+        loadLyricWithDomsReturn(src, function (lyricContent) {
+            host.html(lyricContent);
+            addInteractiveClass();
+        });
     }
-
-    var lyricExport = $({});
 
     var lyricObj = { url: null, pos: 0, items: [], plainTxt: null, isManual: false, curScriptBlk: null, curLycItem: null };
     var lyricStateObj = { seq: 0, timeframe: null, lyricTxt: [], startTime: null, endTime: null, expectedIndex: 0 };
 
-    lyricExport.loadLyric = function loadLyric(url, cb) {
+    function loadLyric(url, cb) {
         lyricObj.url = url;
 
         $.get(url, function (txt) {
@@ -22,8 +26,8 @@
         });
     }
 
-    lyricExport.loadLyricWithDomsReturn = function loadLyricWithDomsReturn(url, cb) {
-        lyricExport.loadLyric(url, function (lyricObj) {
+    function loadLyricWithDomsReturn(url, cb) {
+        loadLyric(url, function (lyricObj) {
             var items = lyricObj.items;
             var lyricContent = '';
             for (var i = 0; i < items.length; i++) {
@@ -37,32 +41,53 @@
                     + items[i].lyricTxt.join('<br/>') + '</div>';
             }
 
-            $('body')
-                .on('mouseover', '.lrc-item', function () {
-                    $(this).addClass('lrc-hover');
-                })
-                .on('mouseout', '.lrc-item', function () {
-                    $(this).removeClass('lrc-hover');
-                })
-                .on('mouseup', '.lrc-item', function (e) {
-                    var sel = getSelectionText().trim();
+            // $('body')
+            //     .on('mouseover', '.lrc-item', function () {
+            //         $(this).addClass('lrc-hover');
+            //     })
+            //     .on('mouseout', '.lrc-item', function () {
+            //         $(this).removeClass('lrc-hover');
+            //     })
+            //     .on('mouseup', '.lrc-item', function (e) {
+            //         var sel = getSelectionText().trim();
 
-                    if (sel) {
-                        lyricObj.curScriptBlk = $('<script src="http://fanyi.youdao.com/openapi.do?keyfrom=MyEnglishLearning&key=932553150&type=data&doctype=jsonp&callback=lyricExport.parseSearch&version=1.1&q=' + sel + '" />');
-                        lyricObj.curLycItem = $(this);
-                        $('body').append(lyricObj.curScriptBlk);
-                        console.log(sel);
-                    }
-                });
+            //         if (sel) {
+            //             lyricObj.curScriptBlk = $('<script src="http://fanyi.youdao.com/openapi.do?keyfrom=MyEnglishLearning&key=932553150&type=data&doctype=jsonp&callback=lyricExport.parseSearch&version=1.1&q=' + sel + '" />');
+            //             lyricObj.curLycItem = $(this);
+            //             $('body').append(lyricObj.curScriptBlk);
+            //             console.log(sel);
+            //         }
+            //     });
             cb(lyricContent);
         });
     }
 
+    function addInteractiveClass(){
+        $('.lrc-item').mouseover(function(){
+            $(this).addClass('lrc-hover');
+        })
+        .mouseout(function(){
+            $(this).removeClass('lrc-hover');
+        })
+        .mouseup(function (e) {
+            var sel = getSelectionText().trim();
+            if(sel)
+                host.trigger('lyric.onTextSelected', [sel]);
+            
 
-    lyricExport.updateCur = function updateCur(curTime) {
+            // if (sel) {
+            //     lyricObj.curScriptBlk = $('<script src="http://fanyi.youdao.com/openapi.do?keyfrom=MyEnglishLearning&key=932553150&type=data&doctype=jsonp&callback=lyricExport.parseSearch&version=1.1&q=' + sel + '" />');
+            //     lyricObj.curLycItem = $(this);
+            //     $('body').append(lyricObj.curScriptBlk);
+            //     console.log(sel);
+            // }
+        });
+    }
+
+    function updateCur(curTime) {
         var p = null;
         var pp = $('.lrc-cur');
-        if(pp && parseFloat(pp.attr('lrc_s')) < curTime && parseFloat(pp.attr('lrc_e'))>=curTime)
+        if (pp && parseFloat(pp.attr('lrc_s')) < curTime && parseFloat(pp.attr('lrc_e')) >= curTime)
             return [p, false];
 
         $('.lrc-cur').removeClass('lrc-cur');
@@ -84,12 +109,10 @@
         return [p, false];
     }
 
-    lyricExport.isManualPlay = function isManualPlay(mode) {
+    function isManualPlay(mode) {
         if (mode != undefined && mode != null) lyricObj.isManual = mode;
         return lyricObj.isManual;
     }
-
-    lyricExport.parseSearch = parseSearch;
 
     function readLine(cb) {
         var start = lyricObj.pos;

@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 
 <html>
+
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Live input record and playback</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Live input record and playback</title>
   <script src="/scripts/jquery.min.js"></script>
   <script src="/scripts/lyric/lyric.js"></script>
+  <link rel="stylesheet" href="/stylesheets/index.css">
   <style type='text/css'>
 
   </style>
 </head>
+
 <body>
-<div class='lrc-container'></div>
-<script>
-  lyricExport.loadLyricWithDomsReturn('lyrics/Friends.S01E01.srt', function (lyricContent) {
-    $('.lrc-container').html(lyricContent);
-    $('.lrc-item').click(function (e) {
-        if (e.pageX - $(this).offset().left <= 20) // lyric-item left border
-            ad.currentTime = parseFloat($(this).attr('lrc_s'));
-    });
-});
+  <div class='lrc-container' lyric lyc_src='lyrics/Friends.S01E01.srt'></div>
+  <script>
+  $('[lyric]').makeLyric();
+//   lyricExport.loadLyricWithDomsReturn('lyrics/Friends.S01E01.srt', function (lyricContent) {
+//     // $('.lrc-container').html(lyricContent);
+//     // $('.lrc-item').click(function (e) {
+//     //     if (e.pageX - $(this).offset().left <= 20) // lyric-item left border
+//     //         ad.currentTime = parseFloat($(this).attr('lrc_s'));
+//     // });
+// });
 </script>
 </body>
+
 </html>
