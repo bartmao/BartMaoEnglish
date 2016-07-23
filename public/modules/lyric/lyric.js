@@ -11,6 +11,8 @@
             host.html(lyricContent);
             addInteractiveClass();
         });
+
+        host.controller = lyric_controller;
     }
 
     var lyricObj = { url: null, pos: 0, items: [], plainTxt: null, isManual: false, curScriptBlk: null, curLycItem: null };
@@ -41,23 +43,6 @@
                     + items[i].lyricTxt.join('<br/>') + '</div>';
             }
 
-            // $('body')
-            //     .on('mouseover', '.lrc-item', function () {
-            //         $(this).addClass('lrc-hover');
-            //     })
-            //     .on('mouseout', '.lrc-item', function () {
-            //         $(this).removeClass('lrc-hover');
-            //     })
-            //     .on('mouseup', '.lrc-item', function (e) {
-            //         var sel = getSelectionText().trim();
-
-            //         if (sel) {
-            //             lyricObj.curScriptBlk = $('<script src="http://fanyi.youdao.com/openapi.do?keyfrom=MyEnglishLearning&key=932553150&type=data&doctype=jsonp&callback=lyricExport.parseSearch&version=1.1&q=' + sel + '" />');
-            //             lyricObj.curLycItem = $(this);
-            //             $('body').append(lyricObj.curScriptBlk);
-            //             console.log(sel);
-            //         }
-            //     });
             cb(lyricContent);
         });
     }
@@ -73,45 +58,7 @@
             var sel = getSelectionText().trim();
             if(sel)
                 host.trigger('lyric.onTextSelected', [sel]);
-            
-
-            // if (sel) {
-            //     lyricObj.curScriptBlk = $('<script src="http://fanyi.youdao.com/openapi.do?keyfrom=MyEnglishLearning&key=932553150&type=data&doctype=jsonp&callback=lyricExport.parseSearch&version=1.1&q=' + sel + '" />');
-            //     lyricObj.curLycItem = $(this);
-            //     $('body').append(lyricObj.curScriptBlk);
-            //     console.log(sel);
-            // }
         });
-    }
-
-    function updateCur(curTime) {
-        var p = null;
-        var pp = $('.lrc-cur');
-        if (pp && parseFloat(pp.attr('lrc_s')) < curTime && parseFloat(pp.attr('lrc_e')) >= curTime)
-            return [p, false];
-
-        $('.lrc-cur').removeClass('lrc-cur');
-        $.each($('.lrc-item'), function (i, v) {
-            if (parseFloat($(v).attr('lrc_s')) >= curTime) return false;
-            else p = $(v);
-        });
-
-        if (p && parseFloat(p.attr('lrc_e')) > curTime) {
-            p.addClass('lrc-cur');
-            console.log(p.attr('lrc_s'));
-            lyricExport.trigger('itemUpdated.lyric'
-                , [parseFloat(p.attr('lrc_s')),
-                    parseFloat(p.attr('lrc_e')),
-                    parseFloat(p.attr('lrc_seq'))]);
-            return [p, true];
-        }
-
-        return [p, false];
-    }
-
-    function isManualPlay(mode) {
-        if (mode != undefined && mode != null) lyricObj.isManual = mode;
-        return lyricObj.isManual;
     }
 
     function readLine(cb) {
@@ -168,25 +115,5 @@
             text = document.selection.createRange().text;
         }
         return text;
-    }
-
-    function parseSearch(record) {
-        var popover = $('#popover' + lyricObj.curLycItem.attr('lrc_seq'));
-        if (popover.length == 0) {
-            popover = $('<div id="popover' + lyricObj.curLycItem.attr('lrc_seq') + '" class="popover fade in top lyric-popover"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><div class="arrow"></div><div class="popover-content"></div></div>');
-            popover.insertBefore(lyricObj.curLycItem);
-            $('.lyric-popover .glyphicon-remove').click(function () {
-                popover.remove();
-            });
-        }
-        var curContent = popover.find('.popover-content').html();
-        var phonetic = record ? record.basic ? record.basic.phonetic : '' : '';
-        phonetic = phonetic ? '[' + phonetic + ']' : '';
-        if (curContent)
-            popover.find('.popover-content').html(curContent + '<br/>' + record.query + phonetic + ':' + record.translation.join('/'));
-        else
-            popover.find('.popover-content').html(record.query + phonetic + ':' + record.translation.join('/'));
-
-        lyricObj.curScriptBlk.remove();
     }
 })(jQuery);

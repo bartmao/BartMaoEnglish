@@ -6,24 +6,30 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Live input record and playback</title>
   <script src="/scripts/jquery.min.js"></script>
-  <script src="/scripts/lyric/lyric.js"></script>
-  <link rel="stylesheet" href="/stylesheets/index.css">
+  <script src="/modules/lyric/lyric.js"></script>
+  <script src="/modules/lyric/lyric_controller.js"></script>
+  <link rel="stylesheet" href="/modules/lyric/lyric.css">
   <style type='text/css'>
 
   </style>
 </head>
 
 <body>
+  <input type=button id="btn">
   <div class='lrc-container' lyric lyc_src='lyrics/Friends.S01E01.srt'></div>
   <script>
+      var i = 1;
   $('[lyric]').makeLyric();
-//   lyricExport.loadLyricWithDomsReturn('lyrics/Friends.S01E01.srt', function (lyricContent) {
-//     // $('.lrc-container').html(lyricContent);
-//     // $('.lrc-item').click(function (e) {
-//     //     if (e.pageX - $(this).offset().left <= 20) // lyric-item left border
-//     //         ad.currentTime = parseFloat($(this).attr('lrc_s'));
-//     // });
-// });
+
+  $('#btn').click(function(){
+    u();
+  });
+
+  function u(){
+    
+    lyric_controller.update(i++);
+    setTimeout(u, 50);
+  }
 </script>
 </body>
 
