@@ -66,3 +66,7 @@ $('.lrc-controller .glyphicon-trash').click(function () {
 })
 
 $('.glyphicon-record').click(function () { lyric_spchreg.start() });
+
+$('[player]').on('player.timeUpdated', function(){
+    console.log('time updated');
+});

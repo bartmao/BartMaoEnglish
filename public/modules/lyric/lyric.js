@@ -57,7 +57,7 @@
         .mouseup(function (e) {
             var sel = getSelectionText().trim();
             if(sel)
-                host.trigger('lyric.onTextSelected', [sel]);
+                host.trigger('lyric.onTextSelected', [$('.lrc-hover'), sel, parseInt(e.timeStamp)]);
         });
     }
 

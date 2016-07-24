@@ -2,7 +2,7 @@
 
 var lyric_controller = function(host){
     this.host = host;
-    this.isManual = 0; // 0,1
+    this.isManual = -1; // 0,1
     this.curItem = null;
 
     this.update = function (timestamp) {
