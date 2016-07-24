@@ -1,30 +1,39 @@
 'use strict'
 
-var lyric_controller = $({});
+var lyric_controller = function(host){
+    this.host = host;
+    this.isManual = 0; // 0,1
+    this.curItem = null;
 
-(function () {
-    var status = 'stop'; // run,stop
-    var isManual = 0; // 0,1
-    var curItem = null;
-    var nextItem = null;
-
-    lyric_controller.update = function (timestamp) {
+    this.update = function (timestamp) {
         var newItem = findCur(timestamp);
-        if(!($('.lrc-cur').length == 0 && newItem.length == 0) && ($('.lrc-cur') != newItem)){
-            $('[lryic]').trigger('lyric.itemUpdated', [newItem]);
-            curItem = newItem;
-            scrollToPos(newItem);
+        if(!(this.host.find('.lrc-cur').length == 0 && newItem.length == 0) && (this.host.find('.lrc-cur') != newItem)){
+            this.curItem = newItem;
+            if(!this.isManual)
+                this.jumpToCur();
+            this.host.trigger('lyric.itemUpdated', [newItem]);
         }
     }
 
-    lyric_controller.jumpToCur = function(){
-        if(curItem.length > 0){
-            curItem.
+    this.jumpToCur = function(){
+        if(this.curItem.length > 0){
+            var lyricContainerMid = this.host.height()/2;
+            this.host[0].scrollTop += this.curItem.position().top - lyricContainerMid;
         }
+    }
+
+    this.setManual = function(isManual){
+        if(this.isManual == isManual) return;
+        this.isManual = isManual;
+        this.host.trigger('lyric.manualModeChanged', [this.isManual]);
+    }
+
+    this.getManual = function(){
+        return this.isManual;
     }
 
     function findCur(ts) {
-        var cur = $('.lrc-cur');
+        var cur = host.find('.lrc-cur');
         if (cur) {
             if (parseFloat(cur.attr('lrc_s')) <= ts && parseFloat(cur.attr('lrc_e')) > ts)
                 return cur;
@@ -32,7 +41,7 @@ var lyric_controller = $({});
                 cur.removeClass('lrc-cur');
         }
 
-        $.each($('.lrc-item'), function (i, e) {
+        $.each(host.find('.lrc-item'), function (i, e) {
             var item = $(e);
             if (parseFloat(item.attr('lrc_s')) <= ts && parseFloat(item.attr('lrc_e')) > ts){
                 item.addClass('lrc-cur');
@@ -43,13 +52,4 @@ var lyric_controller = $({});
 
         return cur;
     }
-
-    function scrollToPos(newItem){
-        var lyricContainerMid = $('.lrc-container').offset().top + $('.lrc-container').height()/2;
-        var curOffset = newItem.offset().top - lyricContainerMid;
-        if(curOffset > 0){
-            console.log(curOffset);
-            $('.lrc-container')[0].scrollTop += curOffset;
-        }
-    }
-})();
+};

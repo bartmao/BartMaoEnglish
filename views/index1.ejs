@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bart Mao English</title>
+  <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+  <link rel="stylesheet" href="/stylesheets/index.css">
+  <script src="/scripts/jquery.min.js"></script>
+  <script src="/scripts/bootstrap.min.js"></script>
+  <script src="/scripts/myrecorder.js"></script>
+  <!--<script src="/scripts/uploader.js"></script>
+  <script src="/scripts/lyric.js"></script>
+  <script src="/scripts/lyric_spchreg.js"></script>-->
+  <script src="/scripts/page/index1.js"></script>
+</head>
+
+<body style="background-color:#8095ff;">
+  <% include partials/nav.ejs %>
+    <div class="container-fluid body-container">
+      <div class="row">
+        <div class="col-sm-12 col-md-3 sidebar">
+          <% include partials/sidebar.ejs %>
+        </div>
+        <div class="col-sm-12 col-md-3 player">
+          <% include partials/player.ejs %>
+        </div>
+        <div class="col-sm-12 col-md-4 lyric">
+          <% include partials/lyric.ejs %>
+        </div>
+      </div>
+    </div>
+
+
+
+</body>
+
+</html>

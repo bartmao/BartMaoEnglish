@@ -12,7 +12,7 @@
             addInteractiveClass();
         });
 
-        host.controller = lyric_controller;
+        return host;
     }
 
     var lyricObj = { url: null, pos: 0, items: [], plainTxt: null, isManual: false, curScriptBlk: null, curLycItem: null };

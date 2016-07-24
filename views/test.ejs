@@ -8,6 +8,7 @@
   <script src="/scripts/jquery.min.js"></script>
   <script src="/modules/lyric/lyric.js"></script>
   <script src="/modules/lyric/lyric_controller.js"></script>
+  <script src="/modules/lyric/lyric_dict.js"></script>
   <link rel="stylesheet" href="/modules/lyric/lyric.css">
   <style type='text/css'>
 
@@ -19,15 +20,19 @@
   <div class='lrc-container' lyric lyc_src='lyrics/Friends.S01E01.srt'></div>
   <script>
       var i = 1;
-  $('[lyric]').makeLyric();
-
+  var host = $('[lyric]').makeLyric();
+  var ctrl = new lyric_controller(host);
+  var dict = new lyric_dict(host, ctrl);
+  host.on('scroll', function(e){
+    console.log('scroll');
+  });
   $('#btn').click(function(){
     u();
   });
 
   function u(){
     
-    lyric_controller.update(i++);
+    ctrl.update(i++);
     setTimeout(u, 50);
   }
 </script>

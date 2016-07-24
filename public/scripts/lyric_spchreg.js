@@ -23,20 +23,6 @@ var lyric_spchreg = $({
                 blinkCurItem(seq);
                 showModeProgressBlk(seq, s, e);
             }
-            // if (!workingProgress) {
-            //     workingProgress = 1;
-            //     startRecording();
-            //     blinkCurItem(seq);
-            //     setTimeout(function () { workingProgress = 2 }, minPostInterval * 1000);
-            // }
-            // else {
-            //     setTimeout(function () {
-            //         if (workingProgress == 2) {
-            //             stopRecording();
-            //             workingProgress = 0;
-            //         }
-            //     }, (e - s) * 1000);
-            // }
         });
     }
 
