@@ -18,12 +18,12 @@ var myrecorder = $({});
         buf = [];
         totalLen = 0;
         isRecording = true;
-        myrecorder.trigger('start.myrecorder');
+        myrecorder.trigger('myrecorder.start');
     }
 
     myrecorder.stop = function () {
         isRecording = false;
-        myrecorder.trigger('stop.myrecorder');
+        myrecorder.trigger('myrecorder.stop');
     }
 
     myrecorder.getWAVBlob = function () {
@@ -70,7 +70,7 @@ var myrecorder = $({});
         var cdata = f.getChannelData(channelNum - 1);
         var downsampledData = downSampleRate(defaultSampleRate, sampleRate, cdata);
 
-        myrecorder.trigger('gotBuffer.myrecorder', [downsampledData]);
+        myrecorder.trigger('myrecorder.gotBuffer', [downsampledData]);
 
         buf.push(downsampledData);
         totalLen += downsampledData.length;
