@@ -1,51 +1,43 @@
 'use strict'
-// dependency: myrecorder.js, lyrics.js
 
-var lyric_spchreg = $({
-});
+var lyric_progressIndictor = $({});
 
 (function () {
     var initialled = false;
-    var audio_context;
-    var workingProgress = 0;
-    var minPostInterval = 2;
-
     var progressBar = $('<div class = "record-progress"></div>');
 
-    var curSeq = 0;
-    lyric_spchreg.start = function start(params) {
-        initRecorder();
-        startRecording();
-        // blinkCurItem(seq);
-        lyricExport.on('itemUpdated.lyric', function (t, s, e, seq) {
-            if (curSeq != seq) {
-                curSeq = seq;
-                blinkCurItem(seq);
-                showModeProgressBlk(seq, s, e);
-            }
-        });
-    }
+    init();
 
-    lyric_spchreg.end = function end(params) {
+    PubSub.subscribe('lyric.recordingStarted', function () {
+        if ($('.lrc-cur')){
+            blinkCurItem(++parseInt($('.lrc-cur').attr('lrc_seq')));
 
-    }
+        }
+    });
 
-    function initRecorder() {
+
+
+    // lyric_progressIndictor.start = function start(params) {
+    //     init();
+    //     startRecording();
+    //     lyricExport.on('itemUpdated.lyric', function (t, s, e, seq) {
+    //         if (curSeq != seq) {
+    //             curSeq = seq;
+    //             blinkCurItem(seq);
+    //             showModeProgressBlk(seq, s, e);
+    //         }
+    //     });
+    // }
+
+    // lyric_progressIndictor.end = function end(params) {
+
+    // }
+
+    function init() {
         if (initialled) return;
 
         $('body').append(progressBar);
         initialled = true;
-    }
-
-    function startRecording() {
-        console.log('start recording:' + new Date());
-        myrecorder.start();
-    }
-
-    function stopRecording() {
-        console.log('stop recording' + new Date());
-        myrecorder.stop();
-        //uploader.uploadBlob(myrecorder.getWAVBlob());
     }
 
     function blinkCurItem(seq) {
@@ -67,12 +59,12 @@ var lyric_spchreg = $({
 
     function showModeProgressBlk(seq, s, e) {
         var item = $('.lrc-cur');
-        if(!item) return;
-        
+        if (!item) return;
+
         var pos = item.offset();
         var height = item.height();
         var width = item.width();
-        
+
         var divContent = $('<div class = "record-progress-content"></div>');
         //divContent.html(item.html());
         //item.text('');

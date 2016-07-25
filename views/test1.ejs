@@ -23,21 +23,24 @@ $('#start').click(function(){
 
   var div1 = $('<div class="progress-wrapper">');
   var div2 = $('<div class="progress-mask">');
+  var h = target.height();
+  var w = target.width();
   div1.html(target.html());
   div1.append(div2);
   target.html('');
   target.append(div1);
 
-   div1.css('position', 'relative');
+   div1.css('position', 'absolute');
    div1.css('overflow', 'visible');
-
+    div1.height(h+'px');
+    div1.width(w+'px');
+    div1.css('top', target.offset().top + 'px');
     div2.css('right', '0px');
     div2.css('position','absolute');
-    div2.height(target.height()+'px');
-    div2.width(target.width()+'px');
+
     div2.css('width', '100%');
     div2.css('height', '100%');
-    div2.css('left', div1.offset().left+'px');
+    //div2.css('left', div1.offset().left+'px');
     div2.css('background-color', 'rgba(255,0,0,0.2)');
   cycleW(100);
 
@@ -46,15 +49,19 @@ $('#start').click(function(){
     if(!isstop){
     $('.progress-mask').css('width', widthPer + '%');
       setTimeout(function(){
-        cycleW(leftPer -1);
-  }, 10);}
+        cycleW(widthPer -1);
+  }, 100);}
 }
 });
 
 
 </script>
 <style>
-  body{padding:0;margin:0;}
+  body {
+    padding: 0;
+    margin: 0;
+  }
+  
   .progress-wrapper {
     /*position:relative;
     overflow:visible; */
@@ -68,14 +75,12 @@ $('#start').click(function(){
     background-color: rgba(255,0,0,0.5);
     display: inline-block;*/
   }
-/*
+  /*
   .outer{
     position: relative;
     overflow: visible;
     background-color: green;
   }*/
-
-  .inner{
-
-  }
+  
+  .inner {}
 </style>

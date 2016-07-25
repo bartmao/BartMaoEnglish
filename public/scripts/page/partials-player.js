@@ -3,7 +3,7 @@
 
     var ad = new Audio("audios/Friends.S01E01.mp3");
     var duration = 29 * 60 + 40;
-    var speedArr = [0.6, 0.8, 1, 1.2, 1.4];
+    var speedArr = [0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8];
 
     $('[player-play]').click(function () {
         if ($(this).is('.glyphicon-play')) {

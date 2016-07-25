@@ -32,16 +32,14 @@
                 var arr = Array.prototype.slice.call(sampleData);
                 socket.emit('newAudioSampleGen', { sample: arr });
             });
+            PubSub.publish('lyric.recordingStarted');
             myrecorder.start();
         }
         else {
             $(this).removeClass('lrc-controller-on');
             myrecorder.stop();
+            PubSub.publish('lyric.recordingStopped');            
         }
-        // socket.on('news', function (data) {
-        //     console.log(data);
-
-        // });
     });
 
 })();
