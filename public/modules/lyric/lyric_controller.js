@@ -3,15 +3,15 @@
 var lyric_controller = function(host){
     this.host = host;
     this.isManual = 0; // 0,1
-    this.curItem = null;
+    this.curItem = $([]);
 
     this.update = function (timestamp) {
         var newItem = findCur(timestamp);
-        if(!(this.host.find('.lrc-cur').length == 0 && newItem.length == 0) && (this.host.find('.lrc-cur') != newItem)){
+        if(this.curItem.attr('lrc_seq') != newItem.attr('lrc_seq')){
             this.curItem = newItem;
             if(!this.isManual)
                 this.jumpToCur();
-            this.host.trigger('lyric.itemUpdated', [newItem]);
+            PubSub.publish('lyric.itemUpdated', [newItem]);
         }
     }
 
@@ -25,7 +25,7 @@ var lyric_controller = function(host){
     this.setManual = function(isManual){
         if(this.isManual == isManual) return;
         this.isManual = isManual;
-        this.host.trigger('lyric.manualModeChanged', [this.isManual]);
+        PubSub.publish('lyric.manualModeChanged', [this.isManual]);
     }
 
     this.getManual = function(){

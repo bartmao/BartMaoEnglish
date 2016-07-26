@@ -8,10 +8,9 @@ var lyric_progressIndictor = $({});
 
     init();
 
-    PubSub.subscribe('lyric.recordingStarted', function () {
+    PubSub.subscribe('lyric.itemUpdated', function (msg, data) {
         if ($('.lrc-cur')){
-            blinkCurItem(++parseInt($('.lrc-cur').attr('lrc_seq')));
-
+            blinkCurItem(parseInt($('.lrc-cur').attr('lrc_seq')));
         }
     });
 
@@ -22,7 +21,7 @@ var lyric_progressIndictor = $({});
     //     startRecording();
     //     lyricExport.on('itemUpdated.lyric', function (t, s, e, seq) {
     //         if (curSeq != seq) {
-    //             curSeq = seq;
+    //             curSeq = seq;    
     //             blinkCurItem(seq);
     //             showModeProgressBlk(seq, s, e);
     //         }
@@ -42,7 +41,8 @@ var lyric_progressIndictor = $({});
 
     function blinkCurItem(seq) {
         var blinkTimes = 5;
-        var item = $('div[lrc_seq="' + seq + '"]');
+        var item = $('div[lrc_seq="' + (seq++) + '"]');
+        console.log(item.text());
         var defaultCr = item.css('border-color');
         blinkSub(blinkTimes);
 
