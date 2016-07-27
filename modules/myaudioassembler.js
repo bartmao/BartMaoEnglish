@@ -1,7 +1,10 @@
 'use strict'
+var fs = require('fs-extra');
+var uuid = require('node-uuid');
+
 module.exports = myaudioassembler;
 
-var cache = [];
+var cache = [[]];
 var totalLen = 0;
 var channelNum = 1;
 var sampleRate = 16000;
@@ -9,11 +12,19 @@ var sampleRate = 16000;
 function myaudioassembler(data) {
     console.log(data.typ + '   ' + new Date().toTimeString());
     //if (!data.sid || !data.typ || !data.sample || !data.ts) return;
-    cache.push(data.sample);
+    cache[0] = (data.sample);
     totalLen += data.sample.length;
-
+    totalLen = data.sample.length ;
     if (data.typ == 'recordStopped') {
-        var blob = getWAVBlob(cache, totalLen);
+        var typedArr = getWAVBlob(cache, totalLen).buffer;
+        console.log(typedArr.byteLength);
+        var blob = [].slice.call(typedArr);
+        console.log(blob);
+        console.log(blob.length);
+        var fp = __dirname + '\\..\\public\\audios\\cache\\' + uuid.v1() + '.wav';
+        var fstream = fs.createWriteStream(fp);
+        fstream.write(blob);
+        fstream.end();
     }
 }
 
