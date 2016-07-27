@@ -1,8 +1,9 @@
-'use strict'
 
 var myrecorder = $({});
 
 (function () {
+    'use strict'
+
     var initialled = false;
 
     var isRecording = false;
@@ -26,12 +27,15 @@ var myrecorder = $({});
         myrecorder.trigger('myrecorder.stop');
     }
 
-    myrecorder.getWAVBlob = function () {
+    myrecorder.getWAVBlob = function (mybuf, myLen) {
+        var thisBuf = mybuf?mybuf:buf;
+        var thisLen = myLen?myLen:totalLen;
+
         var oneBuf = new Float32Array(totalLen);
         var offset = 0;
-        for (var i = 0; i < buf.length; ++i) {
-            oneBuf.set(buf[i], offset);
-            offset += buf[i].length;
+        for (var i = 0; i < thisBuf.length; ++i) {
+            oneBuf.set(thisBuf[i], offset);
+            offset += thisBuf[i].length;
         }
 
         var encodedBuf = encodeWAV(oneBuf);

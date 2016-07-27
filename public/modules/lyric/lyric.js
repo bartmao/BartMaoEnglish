@@ -33,17 +33,17 @@
             var items = lyricObj.items;
             var lyricContent = '';
             for (var i = 0; i < items.length; i++) {
-                lyricContent += '<div class = "lrc-item" lrc_s = "'
+                lyricContent += '<li class = "lrc-item" lrc_s = "'
                     + items[i].startTime
                     + '" lrc_e = "'
                     + items[i].endTime
                     + '" lrc_seq = "'
                     + items[i].seq
                     + '" >'
-                    + items[i].lyricTxt.join('<br/>') + '</div>';
+                    + items[i].lyricTxt.join('<br/>') + '</li>';
             }
 
-            cb(lyricContent);
+            cb('<ul>' + lyricContent + '</ul>');
         });
     }
 

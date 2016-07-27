@@ -22,12 +22,13 @@
         ctrl.update(data[0]);
     });
 
+    var socket = io('http://localhost:3000');
+
     $('[lyric_record]').click(function () {
         var isOn = $(this).is('.lrc-controller-on');
         if (!isOn) {
             $(this).addClass('lrc-controller-on');
 
-            var socket = io('http://localhost:3000');
             myrecorder.on('myrecorder.gotBuffer', function (t, sampleData) {
                 var arr = Array.prototype.slice.call(sampleData);
                 socket.emit('newAudioSampleGen', { sample: arr });
@@ -38,6 +39,7 @@
         else {
             $(this).removeClass('lrc-controller-on');
             myrecorder.stop();
+            socket.emit('newAudioSampleGen', { sample: [], typ: 'recordStopped'});
             PubSub.publish('lyric.recordingStopped');            
         }
     });

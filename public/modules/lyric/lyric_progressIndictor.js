@@ -9,28 +9,12 @@ var lyric_progressIndictor = $({});
     init();
 
     PubSub.subscribe('lyric.itemUpdated', function (msg, data) {
-        if ($('.lrc-cur')){
-            blinkCurItem(parseInt($('.lrc-cur').attr('lrc_seq')));
+        var item = data[0];
+        if (item.length > 0) {
+            //blinkCurItem(parseInt(item.attr('lrc_seq')));
+            // showModeProgressBlk(item, parseFloat(item.attr('lrc_s')), parseFloat(item.attr('lrc_e')));
         }
     });
-
-
-
-    // lyric_progressIndictor.start = function start(params) {
-    //     init();
-    //     startRecording();
-    //     lyricExport.on('itemUpdated.lyric', function (t, s, e, seq) {
-    //         if (curSeq != seq) {
-    //             curSeq = seq;    
-    //             blinkCurItem(seq);
-    //             showModeProgressBlk(seq, s, e);
-    //         }
-    //     });
-    // }
-
-    // lyric_progressIndictor.end = function end(params) {
-
-    // }
 
     function init() {
         if (initialled) return;
@@ -57,26 +41,47 @@ var lyric_progressIndictor = $({});
         }
     }
 
-    function showModeProgressBlk(seq, s, e) {
-        var item = $('.lrc-cur');
-        if (!item) return;
+    function showModeProgressBlk(target, s, e) {
+        var ts = 'pgs' + new Date().getTime();
+        var div0 = $('<div class="clear" style="clear:both;">');
+        var div1 = $('<div class="progress-wrapper" id="' + ts + '">');
+        var div2 = $('<div class="progress-mask">');
+        var h = target.height();
+        var w = target.width();
+        var orginContent = target.html();
+        div1.html(orginContent);
+        div1.append(div2);
+        target.html('');
+        target.append(div0);
+        target.append(div1);
+        target.append(div0);
 
-        var pos = item.offset();
-        var height = item.height();
-        var width = item.width();
-
-        var divContent = $('<div class = "record-progress-content"></div>');
-        //divContent.html(item.html());
-        //item.text('');
-        progressBar.append(divContent);
-        progressBar.css('top', pos.top + 'px');
-        progressBar.css('left', pos.left + 'px');
-        progressBar.css('height', height + 'px');
-        progressBar.css('width', width + 'px');
-
-        //divWrapper.animate({ width: "0px" }, (e - s) * 1000);
-        //setTimeout((function(d){d.remove();})(div), (e - s) * 1000);
-
+        // div1.css('position', 'relative');
+        // div1.css('overflow', 'visible');
+        div1.css('float', 'left');
+        // div2.css('right', '0px');
+        // div2.css('top', '0px');
+        div2.css('position', 'relative');
+        div2.css('top', '-' + div1.height() + 'px');
+        div2.css('width', '100%');
+        div2.css('height', div1.height() + 'px');
+        div2.css('background-color', 'rgba(255,0,0,0.2)');
+        cycleReduceW(100);
+        var reduceUnit = 100 / (e - s) / 1000 * 50;
+        //setTimeout(, (e-s)*1000);
+        var isStop = 0;
+        function cycleReduceW(widthPer) {
+            if (widthPer + reduceUnit < 0) {
+                //target.html(orginContent);
+                return;
+            }
+            else if (true) {
+                div2.css('width', widthPer + '%');
+                setTimeout(function () {
+                    cycleReduceW(widthPer - reduceUnit);
+                }, 50);
+            }
+        }
     }
 
 })();

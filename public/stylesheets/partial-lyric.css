@@ -1,0 +1,93 @@
+.lrc-wrapper-bg
+{
+    opacity:0.1;
+    width:100%;
+    height:464px;
+    background:black;
+    margin-left:0px;
+    margin-bottom: 5px;
+    
+}
+
+.lrc-playmode
+{
+    display: inline-block;    
+}
+
+.lrc-controller{
+    float: left;
+    margin: 10px;
+    z-index: 100;
+    position: relative; 
+}
+
+.lrc-controller .glyphicon{
+    font-size: 16px; 
+    padding-right: 10px;
+}
+
+.lrc-controller-on{
+    color: white;
+}
+
+.lrc-container
+{
+    position:relative;
+    top: -426px;
+    display: block;
+    width:90%;
+    height:400px;    
+    font:14px/20px 'microsoft yahei', Helvetica, Arial, 宋体, sans-serif;
+    color: white;
+    overflow-y: scroll;
+}
+
+.lrc-container li
+{
+    list-style-type: none;
+    margin-left:-20px;
+}
+
+.lrc-item
+{
+    margin-bottom: 10px;
+    border-width: 0 0 0 20px;
+    border-color: rgba(0,0,255,0.05);
+    border-style: solid;
+    padding-left: 10px;    
+}
+
+.lrc-cur
+{
+    font-size: 25px;    
+}
+
+.lrc-hover
+{
+    border-color: rgba(0,0,255,0.1);
+}
+
+.lyric-popover
+{
+    display: block;
+    position:relative;
+    opacity: 0.3 !important;
+    margin-left: 20px;
+}
+
+.lyric-popover .glyphicon-remove
+{
+    color: black;
+    float: right;
+}
+
+.record-progress{
+    background-color: rgba(255,0,0,0.2);
+    position: absolute;
+}
+
+.popover-content
+{
+    opacity: 1;
+    color: black;
+}

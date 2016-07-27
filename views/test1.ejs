@@ -1,12 +1,25 @@
+<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
 <script src="/scripts/jquery.min.js"></script>
+<script src="/scripts/bootstrap.min.js"></script>
 <button id='start'>Start</button>
 <button id='stop'>Stop</button>
 <button id='export'>Export</button>
 
-<div class='outer'>
-  TEstldkjfgldsjflkdsjfkldsjflksTEstldkjfgldsjflkdsjfkldsjflksTEstldkjfgldsjflkdsjfkldsjflksTEstldkjfgldsjflkdsjfkldsjflks
+<!--<div class='outer'>TEstldkjfgldsjflkdsjfkldsjflksTEstldkjfgldsjflkdsjfkldsjflksTEstldkjfgldsjflkdsjfkldsjflksTEstldkjfgldsjflkdsjfkldsjflks</div>-->
+<div class="progress">
+  <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 51.9515%;">
+  </div>
 </div>
-<script>
+<div class="outer">
+  <div class="progress-wrapper" style="height:20px;float:left;">
+    TEstldkjfgldsjflkdsjfkldsjflksTEstldkjf
+    <div class="progress-mask" style="height: 100%; background-color: rgba(255, 0, 0, 0.2);float:left;width:50%"></div>
+  </div>
+</div>
+
+
+
+    <script>
 
 $('.start').click(function(){
 
@@ -30,57 +43,32 @@ $('#start').click(function(){
   target.html('');
   target.append(div1);
 
-   div1.css('position', 'absolute');
+   div1.css('position', 'relative');
    div1.css('overflow', 'visible');
-    div1.height(h+'px');
-    div1.width(w+'px');
-    div1.css('top', target.offset().top + 'px');
-    div2.css('right', '0px');
-    div2.css('position','absolute');
+  div2.css('right', '0px');
+  div2.css('top','0px');
+  div2.css('position','absolute');
 
     div2.css('width', '100%');
     div2.css('height', '100%');
-    //div2.css('left', div1.offset().left+'px');
     div2.css('background-color', 'rgba(255,0,0,0.2)');
-  cycleW(100);
+  cycleReduceW(100);
 
-  function cycleW(widthPer){
+  function cycleReduceW(widthPer){
     if(widthPer<0) return;
     if(!isstop){
     $('.progress-mask').css('width', widthPer + '%');
       setTimeout(function(){
-        cycleW(widthPer -1);
+        cycleReduceW(widthPer -1);
   }, 100);}
 }
 });
 
 
 </script>
-<style>
-  body {
-    padding: 0;
-    margin: 0;
-  }
-  
-  .progress-wrapper {
-    /*position:relative;
-    overflow:visible; */
-  }
-  
-  .progress-mask {
-    /*position: absolute;
-    right: 0px;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255,0,0,0.5);
-    display: inline-block;*/
-  }
-  /*
-  .outer{
-    position: relative;
-    overflow: visible;
-    background-color: green;
-  }*/
-  
-  .inner {}
-</style>
+    <style>
+      body {
+        padding: 0;
+        margin: 0;
+      }
+    </style>

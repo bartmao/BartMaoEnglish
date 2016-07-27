@@ -27,7 +27,7 @@ var lyric_controller = function(host){
         this.isManual = isManual;
         PubSub.publish('lyric.manualModeChanged', [this.isManual]);
     }
-
+    
     this.getManual = function(){
         return this.isManual;
     }
