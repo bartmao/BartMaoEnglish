@@ -21,4 +21,8 @@ myfile.readConfig = function (key, subkey) {
   }
 }
 
+myfile.getFileName = function(relativeName){
+  return __dirname + relativeName;
+}
+
 module.exports = myfile;

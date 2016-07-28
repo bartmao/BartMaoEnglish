@@ -31,7 +31,7 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 io.on('connection', function (socket) {
-  socket.on('newAudioSampleGen', function (data) {
+  socket.on('MyRecorder', function (data) {
     new myaudioassembler(data).handle();
   });
 });

@@ -22,16 +22,22 @@
         ctrl.update(data[0]);
     });
 
-    var socket = io('http://localhost:3000');
-
+    var socket;
+    var sessionId;
     $('[lyric_record]').click(function () {
+        if (!socket) {
+            socket = io('http://localhost:3000');
+            sessionId = $('#sessionId').val();
+        }
+
         var isOn = $(this).is('.lrc-controller-on');
         if (!isOn) {
             $(this).addClass('lrc-controller-on');
+            socket.emit('MyRecorder', { typ: 'started', sid: sessionId });
 
             myrecorder.on('myrecorder.gotBuffer', function (t, sampleData) {
                 var arr = Array.prototype.slice.call(sampleData);
-                socket.emit('newAudioSampleGen', { sample: arr });
+                socket.emit('MyRecorder', { typ: 'sampleGot', sample: arr, sid: sessionId });
             });
             PubSub.publish('lyric.recordingStarted');
             myrecorder.start();
@@ -39,8 +45,8 @@
         else {
             $(this).removeClass('lrc-controller-on');
             myrecorder.stop();
-            socket.emit('newAudioSampleGen', { sample: [], typ: 'recordStopped'});
-            PubSub.publish('lyric.recordingStopped');            
+            socket.emit('MyRecorder', { typ: 'stopped', sid: sessionId });
+            PubSub.publish('lyric.recordingStopped');
         }
     });
 

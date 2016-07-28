@@ -6,168 +6,37 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Bart Mao English</title>
-
-  <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
-  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+  <!--<link rel="stylesheet" href="/stylesheets/index.css">-->
+
+  <script src="/scripts/jquery.min.js"></script>
+  <script src="/scripts/bootstrap.min.js"></script>
+  <script src="/scripts/socket.io-1.4.5.js"></script>
+  <script src="/scripts/pubsub.js"></script>
+  <script src="/scripts/myrecorder.js"></script>
+  <!--<script src="/scripts/uploader.js"></script>
+  <script src="/scripts/lyric.js"></script>
+  <script src="/scripts/lyric_spchreg.js"></script>-->
+  <script src="/scripts/page/index1.js"></script>
 </head>
 
 <body style="background-color:#8095ff;">
-  <nav class="navbar navbar-default">
-    <div class="container-fluid">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
-          aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-        <a class="navbar-brand" href="#">Bart Mao English</a>
-      </div>
-
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav">
-          <li><a href="#"><span class="glyphicon glyphicon-film" aria-hidden="true"></span> Video <span class="sr-only">(current)</span></a></li>
-          <li class="active"><a href="#"><span class="glyphicon glyphicon-music" aria-hidden="true"></span> Audio</a></li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Others <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-              <li><a href="#">Forum</a></li>
-              <li><a href="#">Library</a></li>
-              <li><a href="#">Offline-Activity</a></li>
-              <li role="separator" class="divider"></li>
-              <li><a href="#">Suggestion</a></li>
-            </ul>
-          </li>
-        </ul>
-        <form class="navbar-form navbar-left" role="search">
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Series Name, etc.">
-          </div>
-          <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search</button>
-        </form>
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href="#">Bart Mao</a></li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-              <li><a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Profile</a></li>
-              <li><a href="#"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> Inbox <span class="badge">14</span></a></li>
-              <li><a href="#"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> Activities</a></li>
-              <li role="separator" class="divider"></li>
-              <li><a href="#"><span class="glyphicon glyphicon-off" aria-hidden="true"></span> Log Out</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-      <!-- /.navbar-collapse -->
-    </div>
-    <!-- /.container-fluid -->
-  </nav>
-  <div class="container-fluid body-container">
-    <div class="row">
-      <div class="col-sm-12 col-md-3 sidebar">
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-            <h3 class="panel-title">Friends (TV Series 1994–2004)</h3>
-          </div>
-          <div class="panel-body">
-            <ul class="list-group">
-              <li class="list-group-item track">
-                <div style="">S01E01.The One Where It AII Began S01E01.The One Where It AII Began</div>
-                <span class="badge">22'15</span>
-              </li>
-              <li class="list-group-item track">
-                <div style="">S01E01.The One Where It AII Began S01E01.The One Where It AII Began</div>
-                <span class="badge">22'15</span>
-              </li>
-              <li class="list-group-item track">
-                <div style="">S01E01.The One Where It AII Began S01E01.The One Where It AII Began</div>
-                <span class="badge">22'15</span>
-              </li>
-              <li class="list-group-item track">
-                <div style="">S01E01.The One Where It AII Began S01E01.The One Where It AII Began</div>
-                <span class="badge">22'15</span>
-              </li>
-              <li class="list-group-item track">
-                <div style="">S01E01.The One Where It AII Began S01E01.The One Where It AII Began</div>
-                <span class="badge">22'15</span>
-              </li>
-              <li class="list-group-item track">
-                <div style="">S01E01.The One Where It AII Began S01E01.The One Where It AII Began</div>
-                <span class="badge">22'15</span>
-              </li>
-            </ul>
-          </div>
+  <% include partials/nav.ejs %>
+    <div class="container-fluid body-container">
+      <div class="row">
+        <div class="col-sm-12 col-md-3 sidebar">
+          <% include partials/sidebar.ejs %>
         </div>
-      </div>
-      <div class="col-sm-12 col-md-3 player">
-        <div class="panel panel-default">
-          <ul class="list-group" style="text-align:center;">
-            <li class="list-group-item">
-              <img src="images/S01E01.png" width="240" height="240" alt="sp_s01e01.png">
-            </li>
-            <li class="list-group-item">
-              <b>S01E01.The One Where It AII Began</b><br>
-              <span style="font-size:12px;">Friends (TV Series 1994–2004)</span>
-            </li>
-            <li class="list-group-item" style="font-size:20px;">
-              <div class="row controller">
-                <div class="col-xs-3"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></div>
-                <div class="col-xs-3"><span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span></div>
-                <div class="col-xs-3"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span></div>
-                <div class="col-xs-3"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></div>
-              </div>
-            </li>
-          </ul>
-          <div class="panel-body">
-            <div class="progress">
-              <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6"><span style="font-size:15px;color:gray;"><span id='curTime'>00:00</span> / 29:40</span>
-              </div>
-              <div class="col-sm-6">
-                <span class="glyphicon glyphicon-new-window" aria-hidden="true" style="float:right"></span>
-                <span class="glyphicon glyphicon-new-eye-open" aria-hidden="true" style="float:right"></span>
-              </div>
-            </div>
-          </div>
+        <div class="col-sm-12 col-md-3 player">
+          <% include partials/player.ejs %>
         </div>
-      </div>
-      <div class="col-sm-12 col-md-4 lyric">
-        <div class="lrc-controller">
-          <div class="lrc-playmode">
-            <span class="glyphicon glyphicon-magnet lrc-controller-cur" aria-hidden="true"></span>
-            <span class="glyphicon glyphicon-hand-down" aria-hidden="true"></span>
-          </div>|
-          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-          <span class="glyphicon glyphicon-search" aria-hidden="true"></span>|
-          <span class="glyphicon glyphicon-record" aria-hidden="true"></span>
-        </div>
-        <div class="lrc-wrapper-bg"></div>
-        <div class="lrc-container">
+        <div class="col-sm-12 col-md-4 lyric">
+          <% include partials/lyric.ejs %>
         </div>
       </div>
     </div>
-  </div>
-  <script src="/scripts/jquery.min.js"></script>
-  <script src="/scripts/bootstrap.min.js"></script>
-  <script src="/scripts/myrecorder.js"></script>
-  <script src="/scripts/uploader.js"></script>
-  <script src="/scripts/lyric.js"></script>
-  <script src="/scripts/lyric_spchreg.js"></script>
-  <script src="/scripts/index.js"></script>
-  <link rel="stylesheet" href="/stylesheets/index.css">
+    <!--not secure, try to improve later-->
+    <input id="sessionId" type="hidden" value="<%=sessionId%>">
 </body>
 
 </html>

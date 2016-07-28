@@ -1,35 +1,62 @@
 'use strict'
-var fs = require('fs-extra');
-var uuid = require('node-uuid');
+var fs = require('fs');
+var myfile = require('./myfile');
 
 module.exports = myaudioassembler;
 
-var cache = [[]];
+var cache = [];
 var totalLen = 0;
 var channelNum = 1;
 var sampleRate = 16000;
 
 function myaudioassembler(data) {
+    if(!data.sid || !data.typ) return;
+    
     console.log(data.typ + '   ' + new Date().toTimeString());
     //if (!data.sid || !data.typ || !data.sample || !data.ts) return;
-    cache[0] = (data.sample);
-    totalLen += data.sample.length;
-    totalLen = data.sample.length ;
-    if (data.typ == 'recordStopped') {
-        var typedArr = getWAVBlob(cache, totalLen).buffer;
-        console.log(typedArr.byteLength);
-        var blob = [].slice.call(typedArr);
-        console.log(blob);
-        console.log(blob.length);
-        var fp = __dirname + '\\..\\public\\audios\\cache\\' + uuid.v1() + '.wav';
-        var fstream = fs.createWriteStream(fp);
-        fstream.write(blob);
-        fstream.end();
+    var sid = data.sid;
+    var fname = ('./public/audios/cache/' + sid + '.wav_tmp');
+    if(data.typ == 'started'){
+        var ws = fs.createWriteStream(fname);
+        cache.push([sid, ws]);
     }
+    else if(data.typ == 'stopped'){
+       	var ws = findWs(sid);
+        ws.end();
+
+        //readBinaryAndGetWAV();
+    }
+    else if(data.typ == 'sampleGot'){
+       	var ws = findWs(sid);
+        ws.write(Buffer.from(data.sample));
+    }
+
+    // cache[0] = (data.sample);
+    // totalLen += data.sample.length;
+    // totalLen = data.sample.length ;
+    // if (data.typ == 'recordStopped') {
+    //     var typedArr = getWAVBlob(cache, totalLen).buffer;
+    //     console.log(typedArr.byteLength);
+    //     var blob = [].slice.call(typedArr);
+    //     console.log(blob);
+    //     console.log(blob.length);
+    //     var fp = __dirname + '\\..\\public\\audios\\cache\\' + uuid.v1() + '.wav';
+    //     var fstream = fs.createWriteStream(fp);
+    //     fstream.write(blob);
+    //     fstream.end();
+    // }
 }
 
 myaudioassembler.prototype.handle = function () {
     //console.log('handle');
+}
+
+function findWs(sid){
+    for(var i = 0; i< cache.length;++i){
+        if(cache[i][0] == sid)
+            return cache[i][1];
+    }
+    return null;
 }
 
 function getWAVBlob(buf, totalLen) {
