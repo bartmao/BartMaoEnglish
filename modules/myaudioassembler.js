@@ -10,53 +10,94 @@ var channelNum = 1;
 var sampleRate = 16000;
 
 function myaudioassembler(data) {
-    if(!data.sid || !data.typ) return;
-    
+    if (!data.sid || !data.typ) return;
+
     console.log(data.typ + '   ' + new Date().toTimeString());
     //if (!data.sid || !data.typ || !data.sample || !data.ts) return;
     var sid = data.sid;
-    var fname = ('./public/audios/cache/' + sid + '.wav_tmp');
-    if(data.typ == 'started'){
-        var ws = fs.createWriteStream(fname);
-        cache.push([sid, ws]);
+    if (data.typ == 'started') {
+        var blk = { sid: sid, ws: null, fname: null, totalSampleLength: 0 };
+        var ws = getWriteableStream(blk);
+        writeWAVStreamHeader(ws);
+        cache.push(blk);
     }
-    else if(data.typ == 'stopped'){
-       	var ws = findWs(sid);
+    else if (data.typ == 'stopped') {
+       	var blk = findBlk(sid);
+        var ws = blk.ws;
+        ws.on('finish', function () {
+            fs.open(blk.fname, 'r+', function (err, fd) {
+                var buf = new Buffer(4);
+                buf.writeUInt32LE(blk.totalSampleLength + 36, 0);
+                fs.write(fd, buf);
+                fs.close(fd);
+
+                cache.pop();
+            });
+        });
         ws.end();
 
         //readBinaryAndGetWAV();
     }
-    else if(data.typ == 'sampleGot'){
-       	var ws = findWs(sid);
-        ws.write(Buffer.from(data.sample));
+    else if (data.typ == 'sampleGot') {
+       	var blk = findBlk(sid);
+        var ws = blk.ws;
+        blk.totalSampleLength += data.sample.length;
+        floatTo16BitPCM(data.sample);
+        var buf = Buffer.from(data.sample);
+        ws.write(buf);
     }
-
-    // cache[0] = (data.sample);
-    // totalLen += data.sample.length;
-    // totalLen = data.sample.length ;
-    // if (data.typ == 'recordStopped') {
-    //     var typedArr = getWAVBlob(cache, totalLen).buffer;
-    //     console.log(typedArr.byteLength);
-    //     var blob = [].slice.call(typedArr);
-    //     console.log(blob);
-    //     console.log(blob.length);
-    //     var fp = __dirname + '\\..\\public\\audios\\cache\\' + uuid.v1() + '.wav';
-    //     var fstream = fs.createWriteStream(fp);
-    //     fstream.write(blob);
-    //     fstream.end();
-    // }
 }
 
 myaudioassembler.prototype.handle = function () {
     //console.log('handle');
 }
 
-function findWs(sid){
-    for(var i = 0; i< cache.length;++i){
-        if(cache[i][0] == sid)
-            return cache[i][1];
+function findBlk(sid) {
+    for (var i = 0; i < cache.length; ++i) {
+        if (cache[i].sid == sid)
+            return cache[i];
     }
     return null;
+}
+
+function getWriteableStream(blk) {
+    var fname = ('./public/audios/cache/' + blk.sid + '.wav');
+    blk.fname = fname;
+    var ws = fs.createWriteStream(fname);
+    blk.ws = ws;
+    return ws;
+}
+
+function writeWAVStreamHeader(ws) {
+    var buf = new Buffer(44);
+    /* RIFF identifier */
+    buf.write('RIFF', 0);
+    /* RIFF chunk length */
+    buf.writeUInt32LE(0, 4);
+    /* RIFF type */
+    buf.write('WAVE', 8);
+    /* format chunk identifier */
+    buf.write('fmt ', 12);
+    /* format chunk length */
+    buf.writeUInt32LE(16, 16);
+    /* sample format (raw) */
+    buf.writeUInt16LE(1, 20);
+    /* channel count */
+    buf.writeUInt16LE(channelNum, 22);
+    /* sample rate */
+    buf.writeUInt32LE(sampleRate, 24);
+    /* byte rate (sample rate * block align) */
+    buf.writeUInt32LE(sampleRate * 2, 28);
+    /* block align (channel count * bytes per sample) */
+    buf.writeUInt16LE(channelNum * 2, 32);
+    /* bits per sample */
+    buf.writeUInt16LE(16, 34);
+    /* data chunk identifier */
+    buf.write('data', 36);
+    /* data chunk length */
+    buf.writeUInt32LE(sampleRate * 2, 40);
+
+    ws.write(buf);
 }
 
 function getWAVBlob(buf, totalLen) {
@@ -105,10 +146,10 @@ function encodeWAV(samples) {
     return view;
 }
 
-function floatTo16BitPCM(view, offset, input) {
-    for (var i = 0; i < input.length; i++ , offset += 2) {
-        var s = Math.max(-1, Math.min(1, input[i]));
-        view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+function floatTo16BitPCM(buf) {
+    for (var i = 0; i < buf.length; i++) {
+        var s = Math.max(-1, Math.min(1, buf[i]));
+        buf[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
     }
 }
 
