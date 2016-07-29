@@ -28,8 +28,8 @@ var myrecorder = $({});
     }
 
     myrecorder.getWAVBlob = function (mybuf, myLen) {
-        var thisBuf = mybuf?mybuf:buf;
-        var thisLen = myLen?myLen:totalLen;
+        var thisBuf = mybuf ? mybuf : buf;
+        var thisLen = myLen ? myLen : totalLen;
 
         var oneBuf = new Float32Array(totalLen);
         var offset = 0;
@@ -72,6 +72,11 @@ var myrecorder = $({});
 
         var f = e.inputBuffer;
         var cdata = f.getChannelData(channelNum - 1);
+
+        for (var i = 0; i < cdata.length; ++i)
+            if (cdata[i] != 0) break;
+        if (i == cdata.length) return;
+
         var downsampledData = downSampleRate(defaultSampleRate, sampleRate, cdata);
 
         myrecorder.trigger('myrecorder.gotBuffer', [downsampledData]);
