@@ -1,15 +1,17 @@
 'use strict'
 var fs = require('fs');
 var myfile = require('./myfile');
+var myspeech = require('./myspeech');
 
 module.exports = myaudioassembler;
 
+// Global obtained data.
 var cache = [];
 var totalLen = 0;
 var channelNum = 1;
 var sampleRate = 16000;
 
-function myaudioassembler(data) {
+function myaudioassembler(data, socket) {
     if (!data.sid || !data.typ) return;
 
     console.log(data.typ + '   ' + new Date().toTimeString());
@@ -23,28 +25,20 @@ function myaudioassembler(data) {
     }
     else if (data.typ == 'stopped') {
        	var blk = findBlk(sid);
-        var ws = blk.ws;
-        ws.on('finish', function () {
-            fs.open(blk.fname, 'r+', function (err, fd) {
-                var buf = new Buffer(4);
-                buf.writeUInt32LE(blk.totalSampleLength + 36, 0);
-                fs.write(fd, buf);
-                fs.close(fd);
-
-                cache.pop();
-            });
-        });
-        ws.end();
-
-        //readBinaryAndGetWAV();
+        refreshAndSendToCongSrv(blk, socket);
     }
     else if (data.typ == 'sampleGot') {
        	var blk = findBlk(sid);
         var ws = blk.ws;
         blk.totalSampleLength += data.sample.length;
-        floatTo16BitPCM(data.sample);
-        var buf = Buffer.from(data.sample);
-        ws.write(buf);
+        ws.write(floatTo16BitPCM(data.sample));
+    }
+    else if (data.typ == 'statementUpdated') {
+        var blk = findBlk(sid);
+        // 10sec * 256k / 16bit = 160000 samples 
+        if (blk.totalSampleLength >= 160000) {
+            refreshAndSendToCongSrv(blk, socket);
+        }
     }
 }
 
@@ -60,10 +54,12 @@ function findBlk(sid) {
     return null;
 }
 
+// Get stream of current session, use Redis as temp stream stroage instead later.
 function getWriteableStream(blk) {
     var fname = ('./public/audios/cache/' + blk.sid + '.wav');
     blk.fname = fname;
     var ws = fs.createWriteStream(fname);
+    console.log('recording file created');
     blk.ws = ws;
     return ws;
 }
@@ -73,7 +69,7 @@ function writeWAVStreamHeader(ws) {
     /* RIFF identifier */
     buf.write('RIFF', 0);
     /* RIFF chunk length */
-    buf.writeUInt32LE(0, 4);
+    buf.writeUInt32LE(0, 4); //populate later
     /* RIFF type */
     buf.write('WAVE', 8);
     /* format chunk identifier */
@@ -95,66 +91,51 @@ function writeWAVStreamHeader(ws) {
     /* data chunk identifier */
     buf.write('data', 36);
     /* data chunk length */
-    buf.writeUInt32LE(sampleRate * 2, 40);
+    buf.writeUInt32LE(0, 40); // populate later
 
     ws.write(buf);
 }
 
-function getWAVBlob(buf, totalLen) {
-    var oneBuf = new Float32Array(totalLen);
-    var offset = 0;
-    for (var i = 0; i < buf.length; ++i) {
-        oneBuf.set(buf[i], offset);
-        offset += buf[i].length;
-    }
-
-    return encodeWAV(oneBuf);
-}
-
-function encodeWAV(samples) {
-    var arr = new ArrayBuffer(44 + samples.length * 2);
-    var view = new DataView(arr);
-
-    /* RIFF identifier */
-    writeString(view, 0, 'RIFF');
-    /* RIFF chunk length */
-    view.setUint32(4, 36 + samples.length * 2, true);
-    /* RIFF type */
-    writeString(view, 8, 'WAVE');
-    /* format chunk identifier */
-    writeString(view, 12, 'fmt ');
-    /* format chunk length */
-    view.setUint32(16, 16, true);
-    /* sample format (raw) */
-    view.setUint16(20, 1, true);
-    /* channel count */
-    view.setUint16(22, channelNum, true);
-    /* sample rate */
-    view.setUint32(24, sampleRate, true);
-    /* byte rate (sample rate * block align) */
-    view.setUint32(28, sampleRate * 2, true);
-    /* block align (channel count * bytes per sample) */
-    view.setUint16(32, channelNum * 2, true);
-    /* bits per sample */
-    view.setUint16(34, 16, true);
-    /* data chunk identifier */
-    writeString(view, 36, 'data');
-    /* data chunk length */
-    view.setUint32(40, samples.length * 2, true);
-
-    floatTo16BitPCM(view, 44, samples);
-    return view;
-}
-
+// Two samples occupies one byte
 function floatTo16BitPCM(buf) {
+    var newBuf = new Buffer(buf.length * 2);
+    var offset = 0;
+
     for (var i = 0; i < buf.length; i++) {
         var s = Math.max(-1, Math.min(1, buf[i]));
-        buf[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+        var augs = s < 0 ? s * 0x8000 : s * 0x7FFF;
+        // uncheck overflow since it's conversion of float to int.
+        newBuf.writeUInt16LE(augs, offset, true);
+        offset += 2;
     }
+
+    return newBuf;
 }
 
-function writeString(view, offset, string) {
-    for (var i = 0; i < string.length; i++) {
-        view.setUint8(offset + i, string.charCodeAt(i));
-    }
+// Refresh the audio stream, send them to Speech Recognition Service
+function refreshAndSendToCongSrv(blk, socket) {
+    var ws = blk.ws;
+    ws.on('finish', function () {
+        fs.open(blk.fname, 'r+', function (err, fd) {
+            // Workaround--populate all length data after audio stream all delivered. 
+            var readBuf = new Buffer(40);
+            var buf = new Buffer(8);
+            fs.read(fd, readBuf, 0, 4);
+            buf.writeUInt32LE(blk.totalSampleLength * 2 + 36, 0); // wav file length
+            buf.writeUInt32LE(blk.totalSampleLength * 2, 4); // wav data length
+            fs.write(fd, buf, 0, 4);
+            fs.read(fd, readBuf, 0, 32); // skip 32bit and jump to data chunk field
+            fs.write(fd, buf, 4, 4);
+            fs.close(fd);
+
+            myspeech.startRecognition(fs.createReadStream(blk.fname), (status, lexical) => {
+                //fs.unlink(blk.fname);
+                socket.emit('MyRecorder.srv', { typ: 'statementParsed', status: status, lexical: lexical });
+            });
+
+            cache.pop();
+        });
+    });
+
+    ws.end();
 }

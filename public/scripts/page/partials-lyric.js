@@ -24,6 +24,7 @@
 
     var socket;
     var sessionId;
+    var lkToken;
     $('[lyric_record]').click(function () {
         if (!socket) {
             socket = io('http://localhost:3000');
@@ -39,14 +40,32 @@
                 var arr = Array.prototype.slice.call(sampleData);
                 socket.emit('MyRecorder', { typ: 'sampleGot', sample: arr, sid: sessionId });
             });
+
+            lkToken = PubSub.subscribe('lyric.itemUpdated', function (item) {
+                socket.emit('MyRecorder', {typ:'statmentUpdated', sid: sessionId});
+            });
+
             PubSub.publish('lyric.recordingStarted');
             myrecorder.start();
+
+            socket.on('MyRecorder.srv', function(msg){
+                console.log(msg.status);
+                console.log(msg.lexical);
+            });
         }
         else {
+            if(lkToken) PubSub.unsubscribe(lkToken);
             $(this).removeClass('lrc-controller-on');
             myrecorder.stop();
             socket.emit('MyRecorder', { typ: 'stopped', sid: sessionId });
             PubSub.publish('lyric.recordingStopped');
+
+            var data = myrecorder.getWAVBlob();
+            var url = URL.createObjectURL(data);
+            var a = $('<a>');
+            a.attr('href', url);
+            a.text('recording');
+            $('body').append(a);
         }
     });
 

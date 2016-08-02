@@ -32,7 +32,7 @@ server.on('listening', onListening);
 
 io.on('connection', function (socket) {
   socket.on('MyRecorder', function (data) {
-    new myaudioassembler(data).handle();
+    new myaudioassembler(data, socket).handle();
   });
 });
 

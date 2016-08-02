@@ -1,6 +1,9 @@
 <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
 <script src="/scripts/jquery.min.js"></script>
 <script src="/scripts/bootstrap.min.js"></script>
+<script src="/scripts/myrecorder.js"></script>
+<script src="/modules/lyric/lyric.js"></script>
+<script src="/modules/lyric/lyric_controller.js"></script>
 <button id='start'>Start</button>
 <button id='stop'>Stop</button>
 <button id='export'>Export</button>
@@ -19,10 +22,10 @@
 
 
 
-    <script>
+<script>
 
 $('.start').click(function(){
-
+  myrecorder.start();
 });
 
   var isstop = false;
@@ -66,9 +69,3 @@ $('#start').click(function(){
 
 
 </script>
-    <style>
-      body {
-        padding: 0;
-        margin: 0;
-      }
-    </style>
